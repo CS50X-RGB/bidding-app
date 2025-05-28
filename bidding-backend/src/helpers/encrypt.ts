@@ -1,21 +1,25 @@
 import argon2 from 'argon2';
-import jwt from "jsonwebtoken";
-import { SECRET_KEY,EXPIRE_TIME } from '../config/config';
+import jwt, { Secret, SignOptions } from "jsonwebtoken";
+import { SECRET_KEY, EXPIRE_TIME } from '../config/config';
 
 
-const secret_key = SECRET_KEY;
-const expireTime = EXPIRE_TIME;
+const secret_key: string = SECRET_KEY;
+const expireTime: string | number = EXPIRE_TIME;
 
 export const hashPassword = async (password: string): Promise<string> => {
-    return argon2.hash(password);
+  return argon2.hash(password);
 }
 
-export const isMatch = async (password : string,hashedPassword: string) : Promise<boolean> => {
-    return await argon2.verify(hashedPassword,password);
+export const isMatch = async (password: string, hashedPassword: string): Promise<boolean> => {
+  return await argon2.verify(hashedPassword, password);
 }
-export const createToken = (payload : object) : string => {
-    return jwt.sign(payload,secret_key,{expiresIn : expireTime});
-}
+export const createToken = (payload: object): string => {
+  return jwt.sign(
+    payload,
+    secret_key as Secret,
+    { expiresIn: expireTime as SignOptions['expiresIn'] }
+  );
+};
 export const verifyToken = (
   token: string,
   name?: string
