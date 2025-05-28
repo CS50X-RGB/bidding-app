@@ -58,9 +58,15 @@ export default function OrderTable({ columnHeaders, rows,showButton }: OrderTabl
      <>
         <Table className="w-2/3">
             <TableHeader>
-                {columnHeaders.map((c, index) => (
-                    <TableColumn key={index}>{c}</TableColumn>
-                ))}
+
+        <TableHeader>
+                {columnHeaders.map((c, index) => {
+                    if (showButton === false && c === "Action") {
+                        return <TableColumn className="hidden">Action</TableColumn>;
+                    }
+                    return <TableColumn key={index}>{c}</TableColumn>;
+        })}
+</TableHeader>
             </TableHeader>
             <TableBody>
                 {rows.map((row, idx) => (

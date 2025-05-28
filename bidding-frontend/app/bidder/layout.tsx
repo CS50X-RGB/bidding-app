@@ -32,15 +32,15 @@ export default function Agent({ children }: React.ReactNode) {
             </div>
         );
     }
-    // const chips = [
-    //     {
-    //         name: "View Users",
-    //         link: "/admin/",
-    //     }, {
-    //         name: "Create Users",
-    //         link: "/admin/create"
-    //     }
-    // ];
+    const chips = [
+         {
+             name: "View Bids",
+             link: "/bidder/",
+         }, {
+             name: "Bids Created",
+             link: "/bidder/accepted"
+         }
+     ];
     const handleLogout = () => {
         Cookies.remove('auth');
         localStorage.removeItem('currentUser');
