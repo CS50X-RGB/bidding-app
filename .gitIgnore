@@ -1,0 +1,4 @@
+/bidding-backend/node_modules
+/bidding-frontend/node_modules
+/bidding-frontend/.next
+/bidding-frontend/.vscode
