@@ -1,10 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum BidStatus {
+    
     PENDING = "pending",
     INPROGRESS = "inprogress",
+    APPROVED="approve",
     ACCEPTED = "accepted",
     REJECTED = "rejected",
+
 }
 
 export interface IBids extends Document {
@@ -18,7 +21,8 @@ export interface IBids extends Document {
     images: [string],
     acceptedBy: mongoose.Schema.Types.ObjectId,
     status: BidStatus,
-    orders: mongoose.Schema.Types.ObjectId[]
+    orders: mongoose.Schema.Types.ObjectId[],
+    
 }
 const BidSchema: Schema = new Schema({
     name: {
@@ -66,7 +70,8 @@ const BidSchema: Schema = new Schema({
     createdOn: {
         type: Date,
         default: Date.now
-    }
-});
+    },
+    
+},{timestamps:true});
 
 export default mongoose.model<IBids>('bid', BidSchema);

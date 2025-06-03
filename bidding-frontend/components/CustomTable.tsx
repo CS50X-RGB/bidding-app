@@ -105,7 +105,7 @@ export default function CustomTable({
                             color="success"
                             startContent={<CheckIcon size={15} height={6} width={6} />}
                             variant="faded">
-                            Online
+                            Active
                         </Chip>
                     ) : (
                         <Chip

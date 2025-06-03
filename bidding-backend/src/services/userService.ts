@@ -1,7 +1,7 @@
 import RoleRepository from "../database/repositories/roleRepository";
 import UserRepository from "../database/repositories/userRepository";
 import { ADMIN_EMAIL, ADMIN_USER, ADMIN_PASS } from "../config/config";
-import { IUserCreate, IUserCreateReturn, IUserLogin,IUserSignin } from "../interfaces/userInterface";
+import { IUserCreate, IUserCreateReturn, IUserLogin, IUserSignin } from "../interfaces/userInterface";
 import { createToken, hashPassword, isMatch } from "../helpers/encrypt";
 import { Response, Request } from "express";
 
@@ -180,6 +180,16 @@ class UserService {
             res.sendFormatted(user, "User Deleted", 204);
         } catch (error) {
             throw new Error(`Error while deleting user`);
+        }
+    }
+
+    public async getUsersByRole(req: Request, res: Response) {
+        try {
+            const roleName = req.params.role.toUpperCase(); 
+            const users = await this.userRepository.getAllUsersByRoleName(roleName);
+            return res.sendArrayFormatted(users, `Users with role ${roleName}`, 200);
+        } catch (error) {
+            return res.sendError(error, "Failed to fetch users by role", 500);
         }
     }
 }

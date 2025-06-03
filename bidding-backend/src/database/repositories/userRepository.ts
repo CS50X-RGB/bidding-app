@@ -2,6 +2,8 @@ import mongoose, { ObjectId } from "mongoose";
 import { IUserCreate, IUserCreation } from "../../interfaces/userInterface";
 import User from "../models/userModel";
 import CategoryRepository from "./categoryRepository";
+import { roles } from "../../app";
+import Role, { IRole } from "../models/roleModel"
 
 class UserRepository {
     public async createUser(user: IUserCreation): Promise<IUserCreation | null> {
@@ -73,6 +75,7 @@ class UserRepository {
             throw new Error("User Not Found")
         }
     }
+
     public async deleteUser(id: ObjectId) {
         try {
             return await User.findByIdAndDelete(id);
@@ -94,5 +97,66 @@ class UserRepository {
             throw new Error(`Error updating isBlocked status: ${e.message}`);
         }
     }
+
+    public async getUserCountByRole(role: ObjectId): Promise<any | null> {
+        try {
+            const totalUserCount = await User.countDocuments({ role: role, isBlocked: false });
+
+            return totalUserCount;
+
+        } catch (error: any) {
+            throw new Error(`Error getting user count by role: ${error.message}`);
+        }
+    }
+
+    public async getAllUsersByRoleName(roleName: string) {
+        try {
+            // Find role document by name
+            const role = await Role.findOne({ name: roleName }).lean();
+            if (!role) {
+                throw new Error(`Role '${roleName}' not found`);
+            }
+            //Aggregation PipeLine
+            const usersWithBidAndOrderCount = await User.aggregate([
+                { $match: { role: role._id } },
+                {
+                    $lookup: {
+                        from: "bids",           // bids collection name
+                        localField: "_id",      // user._id
+                        foreignField: "createdBy", // bids.createdBy
+                        as: "bids"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "orders",
+                        localField: "_id",
+                        foreignField: "createdBy", // count orders accepted by user (assuming this is correct field)
+                        as: "orders",
+                    },
+                },
+                {
+                    $addFields: {
+                        bidCount: { $size: "$bids" },  // count bids array size
+                        orderCount: { $size: "$orders" },
+                    }
+                },
+                {
+                    $project: {
+                        bids: 0,   // exclude full bids array from output
+                        orders: 0,
+
+                    }
+                }
+            ]);
+
+            return { users: usersWithBidAndOrderCount, count: usersWithBidAndOrderCount.length };
+
+
+        } catch (error: any) {
+            throw new Error(`Error fetching users with role '${roleName}': ${error.message}`);
+        }
+    }
+
 }
 export default UserRepository;

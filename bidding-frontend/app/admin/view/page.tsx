@@ -12,6 +12,9 @@ export default function ViewAllBidsAdmin() {
             return await getData(bidsRoutes.adminBid, {});
         }
     });
+
+    console.log(allBids);
+    
     if (isFetching) {
         return (
             <div className="flex flex-col gap-4 items-center w-full">

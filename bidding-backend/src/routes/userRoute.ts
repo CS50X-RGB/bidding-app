@@ -22,4 +22,11 @@ router.get('/my/user',userMiddleware.verify.bind(userMiddleware),userService.get
 router.get('/all-users',userMiddleware.verifyAdmin.bind(userMiddleware),userService.getAllUsers.bind(userService));
 router.delete('/remove/:id',userMiddleware.deleteId.bind(userMiddleware),userService.deleteById.bind(userService));
 router.put('/block/:id',userMiddleware.deleteId.bind(userMiddleware),userService.updateIsBlocked.bind(userService));
+
+router.get(
+  '/role/:role',
+  userMiddleware.verifyAdmin.bind(userMiddleware),
+  userService.getUsersByRole.bind(userService)
+);
+
 export default router;

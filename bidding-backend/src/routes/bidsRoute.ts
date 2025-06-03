@@ -65,10 +65,45 @@ router.get("/get/:bidId",
     bidsMiddleware.checkbidId.bind(bidsMiddleware),
     bidsService.getOrdersByBidId.bind(bidsService)
 );
+
+router.patch("/approveBid/:bidId",
+    userMiddleware.verifyAdmin.bind(userMiddleware),
+    bidsMiddleware.checkbidId.bind(bidsMiddleware),
+    bidsService.approveBid.bind(bidsService)
+)
+router.patch("/rejectBid/:bidId",
+    userMiddleware.verifyAdmin.bind(userMiddleware),
+    bidsMiddleware.checkbidId.bind(bidsMiddleware),
+    bidsService.rejectBid.bind(bidsService)
+)
 router.get("/get/my/inprogress",
     userMiddleware.verify.bind(userMiddleware),
     bidsService.getMyInprogressBids.bind(bidsService)
 )
+router.get("/all/approvedbids",
+    userMiddleware.verify.bind(userMiddleware),
+    bidsService.getApprovedBid.bind(bidsService)
+)
+
+router.get("/allbids/:sellerId",
+    userMiddleware.verifyAdmin.bind(userMiddleware),
+    bidsMiddleware.checkId.bind(bidsMiddleware),
+    bidsService.getBidsBySellerId.bind(bidsService)
+
+)
+
+router.get('/user/:id',
+    userMiddleware.verifyAdmin.bind(userMiddleware),
+    bidsService.getBidsByUserId.bind(bidsService)
+);
+router.get('/user/bidder/all/bids/:id',
+    userMiddleware.verifyAdmin.bind(userMiddleware),
+    bidsService.getBidsByBidderOrders.bind(bidsService)
+);
+
+
+
+
 // router.get('/:name',
 //     categoryMiddleware.getCategory.bind(categoryMiddleware),
 //     categoryService.getCategoryId.bind(categoryService),

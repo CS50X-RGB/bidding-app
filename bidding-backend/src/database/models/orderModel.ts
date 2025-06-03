@@ -21,6 +21,6 @@ const OrderSchema : Schema = new Schema({
     ref : 'bid',
     required : true
   }
-});
+},{timestamps:true});
 
 export default mongoose.model<IOrderSchema>('order',OrderSchema);

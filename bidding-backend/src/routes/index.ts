@@ -4,6 +4,7 @@ import userRouter from "./userRoute"
 import categoryRouter from "./categoryRoute";
 import bidsRouter from "./bidsRoute";
 import orderRouter from "./orderRoute";
+import analyticsRouter from "./analyticsRoute";
 
 const router = Router();
 const version = "v1";
@@ -15,4 +16,5 @@ router.use(`${prefix}/user`, userRouter);
 router.use(`${prefix}/category`, categoryRouter);
 router.use(`${prefix}/bids`, bidsRouter);
 router.use(`${prefix}/order`,orderRouter);
+router.use(`${prefix}/analytics`,analyticsRouter);
 export default router;

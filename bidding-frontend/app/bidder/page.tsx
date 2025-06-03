@@ -4,14 +4,17 @@ import BidCardSkeleton from "@/components/Card/BidLoadingCard";
 import { getData } from "@/core/api/apiHandler"
 import { bidsRoutes } from "@/core/api/apiRoutes"
 import { useQuery } from "@tanstack/react-query"
+import { all } from "axios";
 
 export default function ViewAllBids() {
     const { data: allBids, isFetching } = useQuery({
-        queryKey: ["get-all-bids"],
+        queryKey: ["get-approved-bids"],
         queryFn: async () => {
-            return await getData(bidsRoutes.getAll, {});
+            return await getData(bidsRoutes.getApprovedBids, {});
         }
     });
+
+    console.log(allBids)
     if (isFetching) {
         return (
             <div className="flex flex-col gap-4 items-center w-full">

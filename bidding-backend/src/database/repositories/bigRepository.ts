@@ -1,8 +1,9 @@
 import { BidInterfaceCreation } from "../../interfaces/bidInterface";
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { ObjectId, Types } from "mongoose";
 import BidsModel, { BidStatus } from "../models/bidsModel";
 import CategoryRepository from "./categoryRepository";
 import OrderModel, { IOrderSchema } from "../models/orderModel";
+import bidsModel from "../models/bidsModel";
 
 interface BidInterface extends BidInterfaceCreation {
     createdBy: mongoose.Schema.Types.ObjectId;
@@ -13,6 +14,7 @@ class BidsRepository {
     constructor() {
         this.categoryRepo = new CategoryRepository();
     }
+
 
     public async createBid(bid: BidInterface): Promise<any | null> {
         try {
@@ -47,13 +49,21 @@ class BidsRepository {
             throw new Error(`Error getting all bids by user: ${error.message}`);
         }
     }
+
+    //for admin 
     public async getAllBids(): Promise<any[] | null> {
         try {
-            return await BidsModel.find({
-                status: { $in: [BidStatus.INPROGRESS, BidStatus.PENDING] }
-            })
+            return await BidsModel.find() //{ status: { $in: [BidStatus.INPROGRESS, BidStatus.PENDING] } }
+                .sort({ createdAt: -1 })
                 .populate("category")
                 .populate("createdBy")
+                .populate("acceptedBy")
+                .populate({
+                    path: "orders",
+                    populate: ({
+                        path: "createdBy"
+                    })
+                })
                 .lean();
         } catch (error: any) {
             throw new Error(`Error getting all bids: ${error.message}`);
@@ -64,6 +74,7 @@ class BidsRepository {
             const bids = await BidsModel.find({
                 category: categoryId,
             })
+                .sort({ createdAt: -1 })
                 .populate("category")
                 .populate("createdBy")
                 .lean();
@@ -103,7 +114,7 @@ class BidsRepository {
             if (!bidDoc) {
                 throw new Error("Bid not found");
             }
-            if (bidDoc.status === BidStatus.PENDING) {
+            if (bidDoc.status === BidStatus.APPROVED) {
                 bidDoc.status = BidStatus.INPROGRESS
             }
             const orderModels = await OrderModel.find({
@@ -125,6 +136,7 @@ class BidsRepository {
             const bids = await BidsModel.find({
                 status: BidStatus.ACCEPTED,
             })
+                .sort({ createdAt: -1 })
                 .populate("category")
                 .populate("createdBy")
                 .populate("acceptedBy")
@@ -139,6 +151,7 @@ class BidsRepository {
             const bids = await BidsModel.find({
                 status: BidStatus.ACCEPTED,
             })
+                .sort({ createdAt: -1 })
                 .populate("category")
                 .populate("createdBy")
                 .populate("acceptedBy")
@@ -153,6 +166,7 @@ class BidsRepository {
             const bids = await BidsModel.find({
                 status: BidStatus.REJECTED,
             })
+                .sort({ createdAt: -1 })
                 .populate("category")
                 .populate("createdBy")
                 .populate("acceptedBy")
@@ -248,6 +262,178 @@ class BidsRepository {
             throw new Error(`Error during getting Bids ${error}`);
         }
     }
+
+    //get total bids count
+    public async getTotalBidsCount(): Promise<any | null> {
+        try {
+            const count = await BidsModel.countDocuments();
+            return count;
+        } catch (error) {
+            throw new Error(`Error getting total bids count: ${error}`);
+        }
+    }
+    //get bids value 
+    public async getTotalBidsValue(status?: BidStatus): Promise<any | null> {
+
+        try {
+            let bids;
+            if (!status) {
+                bids = await BidsModel.aggregate([
+                    {
+                        $group: {
+
+                            _id: null,
+                            totalValue: { $sum: "$totalPrice" }
+                        },
+                    }
+
+                ])
+            } else {
+                bids = await BidsModel.aggregate([
+                    {
+                        $match: { status: status }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalValue: { $sum: "$totalPrice" }
+                        },
+                    }
+
+                ])
+            }
+
+            return bids[0]?.totalValue || 0;
+        }
+        catch (error) {
+            throw new Error(`Error getting total bids value: ${error}`);
+        }
+
+    }
+
+    //get bid count by status
+    public async getBidsCountByStatus(): Promise<any | null> {
+        try {
+            const result = await BidsModel.aggregate([
+                {
+                    $group: {
+                        _id: "$status",
+                        count: { $sum: 1 }
+                    }
+                }
+            ])
+
+            const counts: Record<string, Number> = {
+                pending: 0,
+                inprogress: 0,
+                accepted: 0,
+                rejected: 0
+            }
+
+            for (const entry of result) {
+                counts[entry._id] = entry.count
+            }
+            return counts;
+        } catch (error) {
+            throw new Error(`Error getting bids stauts: ${error}`);
+        }
+    }
+
+    public async approveBid(bidId: ObjectId): Promise<any | null> {
+        try {
+            return await BidsModel.findByIdAndUpdate(
+                bidId,
+                { status: BidStatus.APPROVED },
+                { new: true }
+            )
+                .populate("category")
+                .populate("createdBy")
+                .lean();
+        } catch (error) {
+            throw new Error(`Error in approving bids: ${error}`);
+        }
+    }
+    public async rejectBid(bidId: ObjectId): Promise<any | null> {
+        try {
+            return await BidsModel.findByIdAndUpdate(
+                bidId,
+                { status: BidStatus.REJECTED },
+                { new: true }
+            )
+                .populate("category")
+                .populate("createdBy")
+                .lean();
+        } catch (error) {
+            throw new Error(`Error in Rejecting bids: ${error}`);
+        }
+    }
+
+    public async getApprovedBids(): Promise<any[] | null> {
+        try {
+            return await BidsModel.find({ status: { $in: [BidStatus.APPROVED, BidStatus.INPROGRESS] } }) //{ status: { $in: [BidStatus.INPROGRESS, BidStatus.PENDING] } }
+                .sort({ createdAt: -1 })
+                .populate("category")
+                .populate("createdBy")
+                .lean();
+        } catch (error: any) {
+            throw new Error(`Error getting all bids: ${error.message}`);
+        }
+    }
+
+    public async getBidsBySellerId(sellerId: ObjectId): Promise<any[] | null> {
+        try {
+            // Example: Fetch bids from DB
+            const bids = await BidsModel.find({ createdBy: sellerId })
+            const total = await BidsModel.countDocuments({ createdBy: sellerId })
+            return bids;
+
+        } catch (error) {
+            console.error('Error fetching bids by sellerId:', error);
+            return null;
+        }
+    }
+
+    public async getAllBidsBySeller(userId: string): Promise<any[] | null> {
+        try {
+            // Convert string to Mongo ObjectId
+            const objectId = new Types.ObjectId(userId);
+
+            return await BidsModel.find({ createdBy: objectId })
+                .sort({createdAt:-1})
+                .populate("category")
+                .populate("createdBy")
+                .lean();
+        } catch (error: any) {
+            throw new Error(`Error getting all bids by user: ${error}`);
+        }
+    }
+
+    public async getAllBidsWithOrdersByUser(userId: string): Promise<any[]> {
+        try {
+            const objectId = new Types.ObjectId(userId);
+
+            // Find all orders created by this user, with fully populated bid info
+            const orders = await OrderModel.find({ createdBy: objectId })
+                .sort({createdAt:-1})
+                .populate({
+                    path: "bid",
+                    populate: [
+                        { path: "category" },
+                        { path: "orders" },
+                    ],
+                })
+                .lean();
+
+            // Just return all orders, each with populated bid info
+            return orders;
+        } catch (error: any) {
+            throw new Error(`Error getting bids with user orders: ${error}`);
+        }
+    }
+
+
+
+
 
 }
 

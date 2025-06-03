@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Spinner, Chip, Button, User, Link } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { link } from "fs";
 
 export default function Admin({ children }: React.ReactNode) {
     const [user, setUser] = useState<any>({});
@@ -34,15 +35,23 @@ export default function Admin({ children }: React.ReactNode) {
     }
     const chips = [
         {
-            name: "View Users",
+            name: "Dashboard",
             link: "/admin/",
         }, {
             name: "Create Users",
             link: "/admin/create"
         },
         {
-            name : "View All Bids",
-            link : "/admin/view"
+            name: "View All Bids",
+            link: "/admin/view"
+        },
+        {
+            name: "View All Sellers",
+            link: "/admin/allSeller"
+        },
+        {
+            name: "View All Bidders",
+            link: "/admin/allBidder"
         }
     ];
     const handleLogout = () => {

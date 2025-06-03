@@ -130,7 +130,7 @@ class BidsService {
     }
     public async getAcceptedOrdersByMe(req: Request, res: Response): Promise<any | null> {
         try {
-            if(!req.user){
+            if (!req.user) {
                 throw new Error(`Not Logged In`);
             }
             const userId = req.user._id;
@@ -170,6 +170,76 @@ class BidsService {
             return res.sendError(error, "Error while getting bids", 400);
         }
     }
+
+    public async approveBid(req: Request, res: Response): Promise<any | null> {
+        try {
+            const bidId: any = req.params.bidId;
+            const updatedBid = await this.bidRepository.approveBid(bidId);
+            return res.sendFormatted(updatedBid, "Bid approved successfully", 200);
+        } catch (error) {
+            return res.sendError(error, "Error while approving bid", 400);
+        }
+    }
+    public async rejectBid(req: Request, res: Response): Promise<any | null> {
+        try {
+            const bidId: any = req.params.bidId;
+            const updatedBid = await this.bidRepository.rejectBid(bidId);
+            return res.sendFormatted(updatedBid, "Bid Rejected successfully", 200);
+        } catch (error) {
+            return res.sendError(error, "Error while rejecting bid", 400);
+        }
+    }
+
+    public async getApprovedBid(req: Request, res: Response): Promise<any | null> {
+        try {
+            const approvedBid = await this.bidRepository.getApprovedBids();
+            return res.sendArrayFormatted(approvedBid, "approved bids fetched", 200);
+        } catch (error) {
+            return res.sendError(error, "Error while fetching the approved bids", 400);
+        }
+    }
+
+    public async getBidsBySellerId(req: Request, res: Response): Promise<any | null> {
+        try {
+            const sellerId: any = req.params.id
+            const bids = await this.bidRepository.getBidsBySellerId(sellerId);
+            return res.sendArrayFormatted(bids, "Bids of seller", 200);
+
+            if (!bids) {
+                return res.sendError(null, "No bids found for the seller", 404);
+            }
+        } catch (error) {
+            return res.sendError(error, "Error while fetching the  bids", 400);
+        }
+    }
+
+    public async getBidsByUserId(req: Request, res: Response): Promise<any> {
+        try {
+            const userId = req.params.id;
+            if (!userId) {
+                return res.sendError("Missing user ID", "Missing user ID", 400);
+            }
+
+            const bidDoc = await this.bidRepository.getAllBidsBySeller(userId);
+            return res.sendArrayFormatted(bidDoc, "Got All Bids By User", 200);
+        } catch (error) {
+            return res.sendError(error, "Failed to get bids by user", 500);
+        }
+    }
+
+    public async getBidsByBidderOrders(req: Request, res: Response): Promise<any> {
+        try {
+            const userId = req.params.id;
+            if (!userId) return res.sendError("Missing user ID", "Missing user ID", 400);
+
+            const bidDocs = await this.bidRepository.getAllBidsWithOrdersByUser(userId);
+            return res.sendArrayFormatted(bidDocs, "Got All Bids With User's Orders", 200);
+        } catch (error) {
+            return res.sendError(error, "Failed to get bids by user's orders", 500);
+        }
+    }
+
+
 }
 
 export default BidsService;
