@@ -13,9 +13,11 @@ export default function Seller() {
     },
   });
 
+  console.log(allSellers);
 
 
   const sellers = allSellers?.data?.data?.users ?? [];
+  const maxBidCount = Math.max(...sellers.map((b: any) => b.bidCount ?? 0));
 
 
 
@@ -23,7 +25,14 @@ export default function Seller() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">All Sellers</h1>
+      <div className=" flex flex-row justify-between">
+        <h1 className="text-2xl font-bold mb-4">All Sellers</h1>
+        <span title="Top Seller by Bids" aria-label="Top Seller" role="img" className="text-yellow-500">
+          🏆 Top Seller
+        </span>
+
+      </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md shadow-md">
           <thead className="bg-gray-50">
@@ -38,7 +47,17 @@ export default function Seller() {
           <tbody className="bg-white divide-y divide-gray-200">
             {sellers.map((user: any) => (
               <tr key={user._id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <div className="flex items-center gap-2">
+                    {Number(user.bidCount) === maxBidCount && (
+                      <span title="Top Seller by Bids" aria-label="Top Seller" role="img" className="text-yellow-500">
+                        🏆
+                      </span>
+                    )}
+                    {user.name}
+                  </div>
+                </td>
+
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.email}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium">
                   {user.role?.name || "Seller"}

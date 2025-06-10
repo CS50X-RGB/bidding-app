@@ -13,6 +13,8 @@ export default function Bidder() {
     },
   });
 
+  console.log(allBidders);
+  
   const bidders = allBidders?.data?.data?.users ?? [];
 
   if (loadingBidders) return <div>Loading...</div>;

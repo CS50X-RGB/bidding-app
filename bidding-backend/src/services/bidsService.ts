@@ -3,6 +3,7 @@ import BidsRepository from "../database/repositories/bigRepository";
 import { BidInterfaceCreation } from "../interfaces/bidInterface";
 import { AWS_BUCKET } from "../config/config";
 import s3 from "../config/aws_config";
+import { error } from "console";
 
 class BidsService {
     private bidRepository: BidsRepository;
@@ -213,7 +214,7 @@ class BidsService {
         }
     }
 
-    public async getBidsByUserId(req: Request, res: Response): Promise<any> {
+    public async getBidsByUserId(req: Request, res: Response): Promise<any | null> {
         try {
             const userId = req.params.id;
             if (!userId) {
@@ -227,10 +228,10 @@ class BidsService {
         }
     }
 
-    public async getBidsByBidderOrders(req: Request, res: Response): Promise<any> {
+    public async getBidsByBidderOrders(req: Request, res: Response): Promise<any | null> {
         try {
             const userId = req.params.id;
-            if (!userId) return res.sendError("Missing user ID", "Missing user ID", 400);
+            if (!userId) return res.sendError(error, "Missing user ID", 400);
 
             const bidDocs = await this.bidRepository.getAllBidsWithOrdersByUser(userId);
             return res.sendArrayFormatted(bidDocs, "Got All Bids With User's Orders", 200);
@@ -238,6 +239,23 @@ class BidsService {
             return res.sendError(error, "Failed to get bids by user's orders", 500);
         }
     }
+
+    public async getBidByBidId(req: Request, res: Response): Promise<any | null> {
+        try {
+            const bidId = req.params.id;
+            if (!bidId) return res.sendError(error, "Missind bid Id", 404);
+
+            const bid = await this.bidRepository.getBidByBidId(bidId);
+
+            return res.sendFormatted(bid, "Bid Fetched Successfully", 200);
+        } catch (error) {
+             return res.sendError(error, "Failed to get bids", 500);
+        }
+
+
+    }
+
+
 
 
 }

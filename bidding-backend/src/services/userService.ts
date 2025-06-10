@@ -185,11 +185,22 @@ class UserService {
 
     public async getUsersByRole(req: Request, res: Response) {
         try {
-            const roleName = req.params.role.toUpperCase(); 
+            const roleName = req.params.role.toUpperCase();
             const users = await this.userRepository.getAllUsersByRoleName(roleName);
             return res.sendArrayFormatted(users, `Users with role ${roleName}`, 200);
         } catch (error) {
             return res.sendError(error, "Failed to fetch users by role", 500);
+        }
+    }
+
+    public async getUserById(req: Request, res: Response) {
+        try {
+            const userId = req.params.id;
+            if (!userId) return res.sendError("Missing user ID", "Missing user ID", 400);
+            const user= await this.userRepository.getUser(userId)
+            res.sendFormatted(user,"user fetched successfully",200);
+        } catch (error) {
+            return res.sendError(error, "Failed to fetch users", 500);
         }
     }
 }

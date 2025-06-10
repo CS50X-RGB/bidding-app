@@ -101,6 +101,11 @@ router.get('/user/bidder/all/bids/:id',
     bidsService.getBidsByBidderOrders.bind(bidsService)
 );
 
+router.get('/get/bid/bidId/:id',
+    userMiddleware.verifyAdmin.bind(userMiddleware),
+    bidsService.getBidByBidId.bind(bidsService)
+)
+
 
 
 

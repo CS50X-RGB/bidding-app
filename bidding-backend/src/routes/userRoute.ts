@@ -29,4 +29,6 @@ router.get(
   userService.getUsersByRole.bind(userService)
 );
 
+router.get('/:id',userMiddleware.verifyAdmin.bind(userMiddleware),userService.getUserById.bind(userService))
+
 export default router;

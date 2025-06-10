@@ -4,6 +4,8 @@ import BidsModel, { BidStatus } from "../models/bidsModel";
 import CategoryRepository from "./categoryRepository";
 import OrderModel, { IOrderSchema } from "../models/orderModel";
 import bidsModel from "../models/bidsModel";
+import path from "path";
+import { populate } from "dotenv";
 
 interface BidInterface extends BidInterfaceCreation {
     createdBy: mongoose.Schema.Types.ObjectId;
@@ -399,22 +401,28 @@ class BidsRepository {
             const objectId = new Types.ObjectId(userId);
 
             return await BidsModel.find({ createdBy: objectId })
-                .sort({createdAt:-1})
+                .sort({ createdAt: -1 })
                 .populate("category")
-                .populate("createdBy")
+                .populate({
+                    path: "createdBy",
+                    populate: {
+                        path: "role"
+                    }
+                })
+
                 .lean();
         } catch (error: any) {
             throw new Error(`Error getting all bids by user: ${error}`);
         }
     }
 
-    public async getAllBidsWithOrdersByUser(userId: string): Promise<any[]> {
+    public async getAllBidsWithOrdersByUser(userId: string): Promise<any[] | null> {
         try {
             const objectId = new Types.ObjectId(userId);
 
             // Find all orders created by this user, with fully populated bid info
             const orders = await OrderModel.find({ createdBy: objectId })
-                .sort({createdAt:-1})
+                .sort({ createdAt: -1 })
                 .populate({
                     path: "bid",
                     populate: [
@@ -422,12 +430,41 @@ class BidsRepository {
                         { path: "orders" },
                     ],
                 })
+                .populate({
+                    path: "createdBy",
+                    populate: {
+                        path: "role"
+                    }
+                })
                 .lean();
 
             // Just return all orders, each with populated bid info
             return orders;
         } catch (error: any) {
             throw new Error(`Error getting bids with user orders: ${error}`);
+        }
+    }
+
+    public async getBidByBidId(bidId: string): Promise<any | null> {
+        try {
+            const objectId = new Types.ObjectId(bidId);
+
+            const bid = await bidsModel.findById(objectId)
+                .populate({
+                    path: "orders",
+                    options: { sort: { createdAt: -1 } },
+                    populate: {
+                        path: "createdBy"
+                    }
+                })
+                .populate("category")
+                .populate("createdBy")
+
+            
+
+            return bid;
+        } catch (error) {
+
         }
     }
 

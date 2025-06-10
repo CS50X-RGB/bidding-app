@@ -8,6 +8,8 @@ export const accountRoutes = {
   deleteById: "/user/remove",
   allUsers: '/user/all-users',
   getUsersByRole: (role: string) => `/user/role/${role}`,
+  getUserById:(id:string)=>`/user/${id}`
+  
 
 }
 export const rolesRoutes = {
@@ -34,6 +36,7 @@ export const bidsRoutes = {
   getBidsBySellerId: "/bids/allbids/:sellerId",
   getSellerBids: (id:string)=>`/bids/user/${id}`,
   getBidderBids: (id: string) => `/bids/user/bidder/all/bids/${id}`,
+  getBid:(id:string)=>`/bids/get/bid/bidId/${id}`,
 
 }
 

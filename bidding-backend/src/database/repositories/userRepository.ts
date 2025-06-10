@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { ObjectId, Types } from "mongoose";
 import { IUserCreate, IUserCreation } from "../../interfaces/userInterface";
 import User from "../models/userModel";
 import CategoryRepository from "./categoryRepository";
@@ -142,6 +142,9 @@ class UserRepository {
                     }
                 },
                 {
+                    $sort: { bidCount: -1 } // ⬅️ Sort by bidCount in ascending order
+                },
+                {
                     $project: {
                         bids: 0,   // exclude full bids array from output
                         orders: 0,
@@ -155,6 +158,18 @@ class UserRepository {
 
         } catch (error: any) {
             throw new Error(`Error fetching users with role '${roleName}': ${error.message}`);
+        }
+    }
+
+    public async getUser(userId: string) {
+        try {
+            const objectId = new Types.ObjectId(userId);
+            const user = await User.findById(objectId).populate("role").lean();
+
+            return user
+
+        } catch (error: any) {
+            throw new Error(`Error getting user count by role: ${error}`);
         }
     }
 
