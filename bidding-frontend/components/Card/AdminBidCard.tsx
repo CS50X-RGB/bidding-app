@@ -37,6 +37,7 @@ export default function AdminBidCard({ bid }: any) {
                                         ●
                                     </span>
                                     <span className="ml-1">{bid.status}</span>
+
                                 </h1>
 
                             </div>
@@ -72,6 +73,7 @@ export default function AdminBidCard({ bid }: any) {
                                         }
                                         name={bid.acceptedBy.name}
                                     />
+
                                 </div>
                             )}
 
@@ -96,6 +98,30 @@ export default function AdminBidCard({ bid }: any) {
                     </div>
                     <div className="flex flex-col items-center gap-4 justify-center">
                         <h1 className="font-bold text-3xl">Rs {bid.maxtotalPrice}</h1>
+                        {bid.incrementalValue && (
+                            <div className=""> incremental Value {bid.incrementalValue}</div>
+                        )}
+                        {
+                            bid.bidPublishedDate && (
+                                <div className="text-sm text-gray-600">
+                                    <strong>Bid Publish Date:</strong>{" "}
+                                    {new Date(bid.bidPublishedDate).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                    })}
+                                </div>
+                            )
+                        }
+                        {
+                            bid.durationInDays && (
+                                <div className="text-sm text-gray-600">
+                                    <strong>Bid Duration : {bid.durationInDays} days</strong>{" "}
+                                        
+                                </div>
+                            )
+                        }
+
                         <div className="flex flex-row gap-4">
                             {bid.status == "pending" && (
                                 <div className=" flex flex-row gap-4">

@@ -8,4 +8,8 @@ export interface BidInterfaceCreation {
     category: mongoose.Schema.Types.ObjectId[],
     totalPrice: number,
     images?: string[],
+    incrementalValue: number | string,
+    bidPublishedDate?: Date,
+    durationInDays:number,
+   
 }

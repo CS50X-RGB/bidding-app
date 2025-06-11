@@ -372,7 +372,25 @@ class BidsRepository {
 
     public async getApprovedBids(): Promise<any[] | null> {
         try {
-            return await BidsModel.find({ status: { $in: [BidStatus.APPROVED, BidStatus.INPROGRESS] } }) //{ status: { $in: [BidStatus.INPROGRESS, BidStatus.PENDING] } }
+            return await BidsModel.find({
+                status: { $in: [BidStatus.APPROVED, BidStatus.INPROGRESS] },
+                $expr: {
+                    $and: [
+                        { $gte: [new Date(), "$bidPublishedDate"] },
+                        {
+                            $lte: [
+                                new Date(),
+                                {
+                                    $add: [
+                                        "$bidPublishedDate",
+                                        { $multiply: ["$durationInDays", 24 * 60 * 60 * 1000] }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            })
                 .sort({ createdAt: -1 })
                 .populate("category")
                 .populate("createdBy")
@@ -381,6 +399,8 @@ class BidsRepository {
             throw new Error(`Error getting all bids: ${error.message}`);
         }
     }
+
+
 
     public async getBidsBySellerId(sellerId: ObjectId): Promise<any[] | null> {
         try {
@@ -460,13 +480,59 @@ class BidsRepository {
                 .populate("category")
                 .populate("createdBy")
 
-            
+
 
             return bid;
         } catch (error) {
 
         }
     }
+
+    public async updateExpiredBids(): Promise<void> {
+        try {
+            const now = new Date();
+
+            // Find bids that are APPROVED or INPROGRESS but already expired
+            const expiredBids = await BidsModel.find({
+                status: { $in: [BidStatus.APPROVED, BidStatus.INPROGRESS] },
+                $expr: {
+                    $lt: [
+                        {
+                            $add: [
+                                "$bidPublishedDate",
+                                { $multiply: ["$durationInDays", 24 * 60 * 60 * 1000] }
+                            ]
+                        },
+                        now
+                    ]
+                }
+            }).populate({
+                path: "orders",
+                options: { sort: { bidAmount: -1 } }, // Highest bid first
+                populate: {
+                    path: "createdBy"
+                }
+            });
+            console.log(`Expired bids processed: ${expiredBids.length}`);
+            for (const bid of expiredBids) {
+                if (bid.orders && bid.orders.length > 0) {
+                    // Set status to accepted and assign winner
+                    bid.status = BidStatus.ACCEPTED;
+                    // Ensure orders are populated and have createdBy as an object or ObjectId
+                    const winnerOrder: any = bid.orders[0];
+                    bid.acceptedBy = winnerOrder.createdBy;
+                } else {
+                    // No orders, mark as expired
+                    bid.status = BidStatus.EXPIRED;
+                }
+
+                await bid.save();
+            }
+        } catch (error) {
+            console.error("Error updating expired bids:", error);
+        }
+    }
+
 
 
 

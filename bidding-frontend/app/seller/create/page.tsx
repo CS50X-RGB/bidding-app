@@ -10,13 +10,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-type Type = "name" | "description" | "totalPrice" | "category" | "images";
+type Type = "name" | "description" | "totalPrice" | "category" | "images" | "incrementalValue" | "bidPublishedDate" | "durationInDays";
 
 export default function BidCreate() {
     const [bid, setBid] = useState<any>({
         name: "",
         description: "",
         totalPrice: 0,
+        incrementalValue: 100,
         category: [],
         images: [],
     });
@@ -60,6 +61,8 @@ export default function BidCreate() {
         formData.append("name", bid.name);
         formData.append("description", bid.description);
         formData.append("totalPrice", bid.totalPrice);
+        formData.append("incrementalValue", bid.incrementalValue);
+
         bid.category.forEach((cat: any) => {
             formData.append("category", bid.category);
         });
@@ -69,6 +72,15 @@ export default function BidCreate() {
                 formData.append("images", file);
             });
         }
+
+        if (bid.bidPublishedDate) {
+            formData.append("bidPublishedDate", bid.bidPublishedDate.toISOString());
+        }
+
+        if (bid.durationInDays) {
+            formData.append("durationInDays", String(bid.durationInDays));
+        }
+
 
         createBid.mutate(formData);
     }
@@ -113,6 +125,27 @@ export default function BidCreate() {
 
                 list.setFilterText("");
                 break;
+
+            case "incrementalValue":
+                setBid((prev: any) => ({
+                    ...prev,
+                    incrementalValue: parseFloat(e),
+                }));
+                break;
+
+            case "bidPublishedDate":
+                setBid((prev: any) => ({
+                    ...prev,
+                    bidPublishedDate: new Date(e),
+                }));
+                break;
+            case "durationInDays":
+                setBid((prev: any) => ({
+                    ...prev,
+                    durationInDays: parseInt(e),
+                }));
+                break;
+
             default:
                 setBid((prev: any) => ({
                     ...prev,
@@ -141,6 +174,36 @@ export default function BidCreate() {
                             }
                             type="number"
                         />
+                        <Input
+                            label="Incremental Bid Value"
+                            labelPlacement="outside"
+                            onValueChange={(e) => handleChange("incrementalValue", e)}
+                            placeholder="minimum 100"
+                            startContent={
+                                <div className="pointer-events-none flex items-center">
+                                    <span className="text-default-400 text-small">Rs</span>
+                                </div>
+                            }
+                            type="number"
+                            min={100}
+                        />
+                        <Input
+                            type="date"
+                            label="Bid Publish Date"
+                            labelPlacement="outside"
+                            //min={new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                            min={new Date(Date.now() - 60 * 60 * 1000).toISOString().split('T')[0]} // allow today or even 1 hour ago
+
+                            onChange={(e) => handleChange("bidPublishedDate", e.target.value)}
+                        />
+                        <Input
+                            type="number"
+                            label="Bid Duration (in days)"
+                            min={1}
+                            max={60}
+                            onChange={(e) => handleChange("durationInDays", e.target.value)}
+                        />
+
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row gap-4 flex-wrap">
                                 {files.map((src: any, index: number) => (

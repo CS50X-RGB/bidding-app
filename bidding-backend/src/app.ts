@@ -8,6 +8,7 @@ import RoleService from './services/roleService';
 import { RoleInterface } from './interfaces/roleInterface';
 import { CategoryInterface } from './interfaces/categoryInterface';
 import CategoryService from './services/categoryService';
+import './cron/expireBidsJob'
 const app = express();
 
 

@@ -37,10 +37,10 @@ export default function getSellerBids() {
 
 
     const bids = bidsData?.data?.data ?? [];
-    const user = userData?.data?.data ?? [];
+    const user = userData?.data?.data ?? null;
 
 
-    if (isFetching) return <div>Loading bids...</div>;
+    if (isFetching || isLoading) return <div>Loading bids...</div>;
 
 
 
@@ -61,7 +61,7 @@ export default function getSellerBids() {
 
                     />
 
-                    <p>{user.role.name}</p>
+                    {user?.role?.name && <p>{user.role.name}</p>}
                 </div>
 
             </Card>

@@ -5,6 +5,15 @@ import { getData } from "@/core/api/apiHandler";
 import { accountRoutes, bidsRoutes } from "@/core/api/apiRoutes";
 import Link from "next/link";
 
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell
+} from "@heroui/table";
+
 export default function Seller() {
   const { data: allSellers, isFetching: loadingSellers } = useQuery({
     queryKey: ["get-all-sellers"],

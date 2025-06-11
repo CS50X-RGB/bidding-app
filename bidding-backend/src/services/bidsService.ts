@@ -13,13 +13,26 @@ class BidsService {
     public async createBid(req: Request, res: Response): Promise<any | null> {
         try {
             const bid: BidInterfaceCreation = req.body;
+
+            //TESTING THE FUNCTIONALITY
+            // const TEST_MODE = true;
+            // if (TEST_MODE) {
+            //     const now = new Date();
+            //     bid.bidPublishedDate = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+            //     bid.durationInDays = 3;
+            // }
+            //-------------------------------//
             if (!req.user) {
                 return res.sendError("User not logged in", "User not logged in", 400);
             }
             const user = req.user._id;
+
             let bidObject = {
                 ...bid,
+                incrementalValue: parseFloat(String(bid.incrementalValue)),
+                durationInDays: parseInt(String(bid.durationInDays)),
                 createdBy: user,
+
             }
             let imagesUrl: string[] = [];
             console.log(req.files, "Files");
@@ -249,10 +262,14 @@ class BidsService {
 
             return res.sendFormatted(bid, "Bid Fetched Successfully", 200);
         } catch (error) {
-             return res.sendError(error, "Failed to get bids", 500);
+            return res.sendError(error, "Failed to get bids", 500);
         }
 
 
+    }
+
+    public async updateExpiredBids(): Promise<void> {
+        await this.bidRepository.updateExpiredBids();
     }
 
 

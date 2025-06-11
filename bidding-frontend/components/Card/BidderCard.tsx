@@ -12,7 +12,10 @@ import { queryClient } from "@/app/providers";
 export default function BidderCard({ bid }: any) {
     const router = useRouter();
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-    const [bidAmount, setBidAmount] = useState<string>(bid.maxtotalPrice.toString());
+    const minBidAmount = bid.maxtotalPrice + (bid.incrementalValue ?? 0);
+    const [bidAmount, setBidAmount] = useState<string>(minBidAmount.toString());
+
+
     const createOrder = useMutation({
         mutationKey: ["create-order"],
         mutationFn: async (data: any) => {
@@ -30,12 +33,13 @@ export default function BidderCard({ bid }: any) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         //  e.preventDefault();
         const amount = Number(bidAmount);
-        if (isNaN(amount) || amount <= 0) {
-            toast.error("Please enter a valid bid amount.");
+        const minBid = bid.maxtotalPrice + (bid.incrementalValue ?? 0); 
+        if (isNaN(amount) || amount < minBid) {
+            toast.error(`Bid must be at least Rs ${minBid}`);
             return;
         }
         createOrder.mutate({
-            bidAmount : amount
+            bidAmount: amount
         });
         onClose();
     }
@@ -85,7 +89,7 @@ export default function BidderCard({ bid }: any) {
                     label="Price"
                     labelPlacement="outside"
                     placeholder="0.00"
-                    min={bid.maxtotalPrice}
+                    min={minBidAmount}
                     value={bidAmount}
                     onValueChange={setBidAmount}
                     startContent={
