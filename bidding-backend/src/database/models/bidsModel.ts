@@ -91,20 +91,27 @@ const BidSchema: Schema = new Schema({
         //     d.setDate(d.getDate() + 3); // 3 days after now
         //     return d;
         // },
-        validate: {
-            validator: function (this: any, value: Date) {
-                const created = new Date(this.createdOn || this.createdAt || Date.now());
+        // validate: {
+        //     validator: function (this: any, value: Date) {
+        //         // const created = new Date(this.createdOn || this.createdAt || Date.now());
 
-                // Strip time from both dates (set to midnight)
-                //const minDate = new Date(created.getFullYear(), created.getMonth(), created.getDate() + 3);
-                const minDate = new Date(created.getTime() + 1 * 60 * 1000); // 1 minute after creation
+        //         // // Strip time from both dates (set to midnight)
+        //         // //const minDate = new Date(created.getFullYear(), created.getMonth(), created.getDate() + 3);
+        //         // const minDate = new Date(created.getTime() + 1 * 60 * 1000); // 1 minute after creation
 
-                const inputDate = new Date(value.getFullYear(), value.getMonth(), value.getDate());
+        //         // const inputDate = new Date(value.getFullYear(), value.getMonth(), value.getDate());
 
-                return inputDate >= minDate;
-            },
-            message: "Start date must be at least 3 days after the bid is created",
-        }
+        //         // return inputDate >= minDate;
+
+        //         const created = new Date(this.createdOn || this.createdAt || Date.now());
+        //         const minDate = new Date(created.getTime() + 1 * 60 * 1000); // 1 min after creation
+
+        //         console.log("This is value",value);
+        //         console.log("this is THIS",this)
+        //         return value >= minDate;
+        //     },
+        //     message: "Start date must be at least 3 days after the bid is created",
+        // }
     },
 
     durationInDays: {
