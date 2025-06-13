@@ -106,6 +106,11 @@ router.get('/get/bid/bidId/:id',
     bidsService.getBidByBidId.bind(bidsService)
 )
 
+router.delete('/:bidId',
+    userMiddleware.verifyAdmin.bind(userMiddleware),
+    bidsService.delteBidById.bind(bidsService)
+)
+
 
 
 

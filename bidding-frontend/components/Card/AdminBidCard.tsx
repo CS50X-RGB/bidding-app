@@ -2,6 +2,8 @@ import { Card, CardBody, Image, Chip, Button, User, Link, useDisclosure, Input }
 import CustomModal from "../Modal/CustomModal";
 import { useApproveBid } from "../Bids/useApproveBid";
 import { useRejectBid } from "../Bids/useRejectBid";
+import { useState } from "react";
+import { useDeleteBid } from "../Bids/useDeleteBid";
 
 
 
@@ -9,6 +11,18 @@ export default function AdminBidCard({ bid }: any) {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const { mutate: approveBid, isPending: isApproving } = useApproveBid()
     const { mutate: rejectBid, isPending: isRejeting } = useRejectBid();
+    const { mutate: deleteBid, isPending: isDeleting } = useDeleteBid();
+
+    const handleDeleteBid = () => {
+        deleteBid(bid._id, {
+            onSuccess: () => {
+                onClose(); // close the modal on success
+            },
+        });
+    };
+
+
+
     return (
         <>
             <Card className="w-3/4">
@@ -117,7 +131,7 @@ export default function AdminBidCard({ bid }: any) {
                             bid.durationInDays && (
                                 <div className="text-sm text-gray-600">
                                     <strong>Bid Duration : {bid.durationInDays} days</strong>{" "}
-                                        
+
                                 </div>
                             )
                         }
@@ -161,7 +175,13 @@ export default function AdminBidCard({ bid }: any) {
             <CustomModal heading="Delete Bid" isOpen={isOpen} onOpenChange={onOpenChange} bottomContent={
                 <div className="flex flex-row gap-2">
                     <Button onPress={onClose}>Close</Button>
-                    <Button color="danger">Submit</Button>
+                    <Button
+                        color="danger"
+                         isLoading={isDeleting}
+                        onPress={handleDeleteBid}
+                    >
+                        Submit
+                    </Button>
                 </div>
             }>
                 <h2>Are You Sure You Want to Delete This Bid ?</h2>

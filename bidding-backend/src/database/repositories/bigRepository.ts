@@ -6,7 +6,8 @@ import OrderModel, { IOrderSchema } from "../models/orderModel";
 import bidsModel from "../models/bidsModel";
 import path from "path";
 import { populate } from "dotenv";
-
+import { AWS_BUCKET } from "../../config/config";
+import s3 from "../../config/aws_config";
 interface BidInterface extends BidInterfaceCreation {
     createdBy: mongoose.Schema.Types.ObjectId;
 }
@@ -532,6 +533,47 @@ class BidsRepository {
             console.error("Error updating expired bids:", error);
         }
     }
+
+    public async deleteBidById(bidId: string): Promise<any | null> {
+        try {
+            const bid = await bidsModel.findById(bidId);
+            if (!bid) throw new Error(`Bid with id ${bidId} not found`);
+
+            if (bid.images && bid.images.length > 0) {
+                const keys = bid.images.map((url: string) => this.extractKeyFromUrl(url));
+                console.log("Deleting keys:", keys);
+
+                const deleteObjects = {
+                    Bucket: AWS_BUCKET as string,
+                    Delete: {
+                        Objects: keys.map((key) => ({ Key: key })),
+                    },
+                };
+
+                const s3Response = await s3.deleteObjects(deleteObjects).promise();
+                console.log("S3 delete response:", JSON.stringify(s3Response, null, 2));
+            }
+
+            const deletedBid = await bidsModel.findByIdAndDelete(bidId);
+            if (!deletedBid) {
+                throw new Error(`Bid with id ${bidId} not found`);
+            }
+
+            await OrderModel.deleteMany({ bid: bidId });
+
+            return deletedBid;
+        } catch (error) {
+            console.error(`Error deleting bid: ${error}`);
+            throw new Error(`Error deleting bid: ${error}`);
+        }
+    }
+
+    private extractKeyFromUrl(url: string): string {
+        const urlObj = new URL(url);
+        return urlObj.pathname.slice(1);
+    }
+
+
 
 
 

@@ -3,27 +3,28 @@ import Cookies from "js-cookie";
 
 import { adminToken, currentAdmin, currentUser, isSuperAdmin } from "./localStorageKeys"
 
-export const baseUrlExport = "https://backend.rohanchatterjee866.workers.dev/api/v1/"
+
 export const baseUrlExportNgRok = "https://2798-106-222-236-78.ngrok-free.app"
-export const localBackend = "http://localhost:5000/api/v1/web/"
+export const localBackend = "https://api-bidding.swyftcore.in/api/v1/web"
+
 
 const instance = axios.create({
   baseURL: localBackend,
   headers: {
     "Content-Type": "application/json",
-   //"ngrok-skip-browser-warning": "123",
+    //"ngrok-skip-browser-warning": "123",
   },
 });
 
 // Request Interceptor (unchanged)
 instance.interceptors.request.use(
   (config) => {
-    const token = Cookies.get("auth"); 
+    const token = Cookies.get("auth");
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
-   // Check if the request is multipart/form-data (file upload request)
+    // Check if the request is multipart/form-data (file upload request)
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"]; // Axios will set the correct Content-Type automatically for multipart requests
     }

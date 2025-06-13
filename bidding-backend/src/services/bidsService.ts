@@ -273,8 +273,22 @@ class BidsService {
     }
 
 
+    //delete bid
+    public async delteBidById(req: Request, res: Response): Promise<any | null> {
+        try {
+            const bidId = req.params.bidId;
 
+            
 
+            if (!bidId) return res.sendError(error, "Missing bid Id", 400);
+
+            const bid = await this.bidRepository.deleteBidById(bidId);
+
+            return res.sendFormatted(bid, "bid deleted successfully", 200);
+        } catch (error) {
+            return res.sendError(error, "Failed to delete bid", 500);
+        }
+    }
 }
 
 export default BidsService;

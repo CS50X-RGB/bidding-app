@@ -26,6 +26,7 @@ export const bidsRoutes = {
   getBitDetails: "/bids/get/",
   approveBid: "bids/approveBid/:bidId",
   rejectBid: "bids/rejectBid/:bidId",
+  deleteBid: '/bids/:bidId',
   adminBid: "/bids/admin/all",
   createOrder: "/order/create/",
   bidsByCount: "/bids/count",
@@ -37,6 +38,7 @@ export const bidsRoutes = {
   getSellerBids: (id:string)=>`/bids/user/${id}`,
   getBidderBids: (id: string) => `/bids/user/bidder/all/bids/${id}`,
   getBid:(id:string)=>`/bids/get/bid/bidId/${id}`,
+  
 
 }
 

@@ -13,10 +13,11 @@ const app = express();
 
 
 app.use(cors({
-   origin: ['http://localhost:3000'],
+   origin: ['http://localhost:3000', 'https://bidding.swyftcore.in'],
    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
    credentials: true
 }));
+
 app.use(express.json());
 app.use(responseFormatter);
 app.use('/api', routes);
@@ -31,18 +32,18 @@ export const roles: RoleInterface[] = [
       "name": "SELLER",
    },
    {
-      "name" : "BIDDER"
+      "name": "BIDDER"
    }
 ]
-const categories : CategoryInterface[] = [
+const categories: CategoryInterface[] = [
    {
-      "name" : "Appliances",
+      "name": "Appliances",
    },
    {
-      "name" : "Furniture"
+      "name": "Furniture"
    },
    {
-      "name" : "Pets"
+      "name": "Pets"
    }
 ]
 const userService = new UserService();
