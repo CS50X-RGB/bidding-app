@@ -124,7 +124,7 @@ export default function App() {
   const [selected, setSelected] = useState<any>("login");
   let list = useAsyncList({
     async load({ filterText }) {
-      let res = await fetch(`${localBackend}role/all/roles/?search=${filterText}`, {});
+      let res = await fetch(`${localBackend}/role/all/roles/?search=${filterText}`, {});
       console.log(res, "RES");
       let json = await res.json();
       return {

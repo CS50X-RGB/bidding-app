@@ -48,7 +48,7 @@ export default function CreateFom() {
     };
     let list = useAsyncList({
         async load({ filterText }) {
-            let res = await fetch(`${localBackend}role/all/roles/?search=${filterText}`, {});
+            let res = await fetch(`${localBackend}/role/all/roles/?search=${filterText}`, {});
             console.log(res, "RES");
             let json = await res.json();
             console.log(json, "JSON");

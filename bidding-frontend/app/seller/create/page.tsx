@@ -26,7 +26,7 @@ export default function BidCreate() {
     const [catToShow, setCatToShow] = useState<any[]>([]);
     let list = useAsyncList({
         async load({ filterText }) {
-            let res = await fetch(`${localBackend}${categoryRoutes.getAll}/?search=${filterText}`, {});
+            let res = await fetch(`${localBackend}/${categoryRoutes.getAll}/?search=${filterText}`, {});
             console.log(res, "RES");
             let json = await res.json();
             console.log(json, "JSON");
