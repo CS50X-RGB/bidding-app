@@ -48,6 +48,10 @@ export default function Supplier({ children }: React.ReactNode) {
     }
     const chips = [
         {
+            name: "Dashboard",
+            link: "/seller",
+        },
+        {
             name: "Create Bid",
             link: "/seller/create",
         },
@@ -56,12 +60,12 @@ export default function Supplier({ children }: React.ReactNode) {
             link: "/seller/view"
         },
         {
-            name : "View Inprogress Bids",
-            link : "/seller/inprogress"
+            name: "View Inprogress Bids",
+            link: "/seller/inprogress"
         },
         {
-            name : "View Completed Bids",
-            link : "/seller/accept"
+            name: "View Completed Bids",
+            link: "/seller/accept"
         }
     ];
     return (

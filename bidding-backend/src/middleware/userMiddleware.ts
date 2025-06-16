@@ -24,8 +24,8 @@ class UserMiddleware {
             const decoded: any = await verifyToken(token);
             if (decoded.role === "ADMIN") {
                 req.user = {
-                    _id : decoded._id,
-                    name : decoded.name
+                    _id: decoded._id,
+                    name: decoded.name
                 }
                 next();
             } else {
@@ -45,8 +45,8 @@ class UserMiddleware {
             const decoded: any = await verifyToken(token);
             if (decoded.role !== "ADMIN") {
                 req.user = {
-                    _id : decoded._id,
-                    name : decoded.name
+                    _id: decoded._id,
+                    name: decoded.name
                 }
                 next();
             } else {
@@ -69,7 +69,7 @@ class UserMiddleware {
     }
     public async signin(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name, password,email,role } = req.body;
+            const { name, password, email, role } = req.body;
             if (!name || !password || !email || !role) {
                 return res.sendError(null, "Invalid fields", 400);
             }
@@ -78,16 +78,66 @@ class UserMiddleware {
             throw new Error(`Error while signing user ${e}`);
         }
     }
-    public async deleteId(req : Request,res : Response,next : NextFunction){
+    public async deleteId(req: Request, res: Response, next: NextFunction) {
         try {
-            const {id} = req.params;
-            if(!id){
-                return res.sendError(null,"Id for object not send",400);
+            const { id } = req.params;
+            if (!id) {
+                return res.sendError(null, "Id for object not send", 400);
             }
             next();
         } catch (error) {
-            return res.sendError(error,"Error while sending id",500);
+            return res.sendError(error, "Error while sending id", 500);
         }
     }
+
+    public async verifySeller(req: Request, res: Response, next: NextFunction) {
+        try {
+            const authHeader = req.headers['authorization'];
+            if (!authHeader) {
+                return res.sendError(null, "Invalid authorization header", 400);
+            }
+
+            const token = authHeader.split(' ')[1];
+            const decoded: any = await verifyToken(token);
+
+            if (decoded.role === "SELLER") {
+                req.user = {
+                    _id: decoded._id,
+                    name: decoded.name,
+                };
+                next();
+            } else {
+                return res.sendError(null, "Only sellers can access this resource", 403);
+            }
+        } catch (error) {
+            return res.sendError(error, "Error verifying seller", 500);
+        }
+    }
+
+    public async verifyBidder(req: Request, res: Response, next: NextFunction) {
+        try {
+            const authHeader = req.headers['authorization'];
+            if (!authHeader) {
+                return res.sendError(null, "Invalid authorization header", 400);
+            }
+
+            const token = authHeader.split(' ')[1];
+            const decoded: any = await verifyToken(token);
+
+            if (decoded.role === "BIDDER") {
+                req.user = {
+                    _id: decoded._id,
+                    name: decoded.name,
+                };
+                next();
+            } else {
+                return res.sendError(null, "Only bidders can access this resource", 403);
+            }
+        } catch (error) {
+            return res.sendError(error, "Error verifying bidder", 500);
+        }
+    }
+
+
 }
 export default UserMiddleware;

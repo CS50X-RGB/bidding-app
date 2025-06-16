@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "@/core/api/apiHandler";
-import { accountRoutes } from "@/core/api/apiRoutes";
+import { accountRoutes, analyticsRoutes } from "@/core/api/apiRoutes";
 import React, { useEffect, useState } from "react";
 import { Spinner, Chip, Button, User, Link } from "@heroui/react";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,7 @@ export default function Agent({ children }: React.ReactNode) {
             return await getData(accountRoutes.getMineProfile, {});
         },
     });
+
     const router = useRouter();
     // Set user data when fetched
     useEffect(() => {
@@ -33,14 +34,15 @@ export default function Agent({ children }: React.ReactNode) {
         );
     }
     const chips = [
-         {
-             name: "View Bids",
-             link: "/bidder/",
-         }, {
-             name: "Bids Created",
-             link: "/bidder/accepted"
-         }
-     ];
+        {
+            name: "DashBoard",
+            link: "/bidder/"
+        },
+        {
+            name: "Live Bids",
+            link: "/bidder/view",
+        }
+    ];
     const handleLogout = () => {
         Cookies.remove('auth');
         localStorage.removeItem('currentUser');
@@ -52,6 +54,16 @@ export default function Agent({ children }: React.ReactNode) {
             <div className="flex flex-row justify-between p-4 w-full items-center">
                 <div className="flex flex-col p-4 gap-2">
                     <h1 className="text-2xl font-bold">Bidder Dashboard</h1>
+                    <div className="flex w-full gap-4 flex-row">
+
+                        {chips.map((c: any, index: number) => {
+                            return (
+                                <Chip key={index} onClick={() => router.push(c.link)} color="primary" className="cursor-pointer">
+                                    {c.name}
+                                </Chip>
+                            )
+                        })}
+                    </div>
                 </div>
                 <div className="flex flex-row gap-4 items-center">
                     <User

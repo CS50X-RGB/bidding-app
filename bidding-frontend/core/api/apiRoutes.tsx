@@ -44,4 +44,6 @@ export const bidsRoutes = {
 
 export const analyticsRoutes = {
   getAnalyticsValue: "/analytics/total",
+  getSellerAnalytics:"/analytics/seller",
+  getBidderAnalytics:"analytics/bidder"
 }

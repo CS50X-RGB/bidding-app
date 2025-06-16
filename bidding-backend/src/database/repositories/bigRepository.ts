@@ -286,7 +286,7 @@ class BidsRepository {
                         $group: {
 
                             _id: null,
-                            totalValue: { $sum: "$totalPrice" }
+                            totalValue: { $sum: "$maxtotalPrice" }
                         },
                     }
 
@@ -299,7 +299,7 @@ class BidsRepository {
                     {
                         $group: {
                             _id: null,
-                            totalValue: { $sum: "$totalPrice" }
+                            totalValue: { $sum: "$maxtotalPrice" }
                         },
                     }
 
@@ -571,6 +571,135 @@ class BidsRepository {
     private extractKeyFromUrl(url: string): string {
         const urlObj = new URL(url);
         return urlObj.pathname.slice(1);
+    }
+
+
+    //---------------------SELLER ANYLYTICS ROUTE----------------------------------------------//
+
+    // Get total bids count for a seller
+    public async getTotalBidsCountForSeller(sellerId: string): Promise<number> {
+        try {
+            return await BidsModel.countDocuments({ createdBy: new mongoose.Types.ObjectId(sellerId) });
+        } catch (error) {
+            throw new Error(`Error getting seller bids count: ${error}`);
+        }
+    }
+
+
+    // Get total bids value for a seller (optional status)
+    public async getTotalBidsValueForSeller(sellerId: string, status?: BidStatus): Promise<number> {
+        try {
+            const match: any = { createdBy: new mongoose.Types.ObjectId(sellerId) };
+            if (status) match.status = status;
+
+            const result = await BidsModel.aggregate([
+                { $match: match },
+                {
+                    $group: {
+                        _id: null,
+                        totalValue: { $sum: "$maxtotalPrice" }
+                    }
+                }
+            ]);
+
+            return result[0]?.totalValue || 0;
+        } catch (error) {
+            throw new Error(`Error getting seller bids value: ${error}`);
+        }
+    }
+
+    // Get bids count by status for a seller
+    public async getBidsCountByStatusForSeller(sellerId: string): Promise<Record<string, number>> {
+        try {
+            const result = await BidsModel.aggregate([
+                { $match: { createdBy: new mongoose.Types.ObjectId(sellerId) } },
+                {
+                    $group: {
+                        _id: "$status",
+                        count: { $sum: 1 }
+                    }
+                }
+            ]);
+
+            const counts: Record<string, number> = {
+                pending: 0,
+                inprogress: 0,
+                accepted: 0,
+                rejected: 0,
+            };
+
+            for (const entry of result) {
+                counts[entry._id] = entry.count;
+            }
+
+            return counts;
+        } catch (error) {
+            throw new Error(`Error getting seller bids count by status: ${error}`);
+        }
+    }
+
+    //---------------------SELLER ANYLYTICS ROUTE END----------------------------------------------//
+
+
+    // Count all orders by this bidder
+    public async getTotalOrdersForBidder(bidderId: string): Promise<number> {
+        return OrderModel.countDocuments({ createdBy: new mongoose.Types.ObjectId(bidderId) });
+    }
+
+    // Count accepted orders for this bidder (linked bid must be 'accepted' status)
+    public async getAcceptedOrdersForBidder(bidderId: string): Promise<number> {
+        return OrderModel.aggregate([
+            { $match: { createdBy: new mongoose.Types.ObjectId(bidderId) } },
+            {
+                $lookup: {
+                    from: "bids",
+                    localField: "bid",
+                    foreignField: "_id",
+                    as: "bidDetails"
+                }
+            },
+            { $unwind: "$bidDetails" },
+            { $match: { "bidDetails.status": "accepted" } },
+            { $count: "count" }
+        ]).then(r => r[0]?.count || 0);
+    }
+
+    // Sum all bidAmounts by this bidder
+    public async getTotalBidAmountForBidder(bidderId: string): Promise<number> {
+        const result = await OrderModel.aggregate([
+            { $match: { createdBy: new mongoose.Types.ObjectId(bidderId) } },
+            { $group: { _id: null, total: { $sum: "$bidAmount" } } }
+        ]);
+        return result[0]?.total || 0;
+    }
+
+    // Sum accepted bidAmounts
+    public async getAcceptedBidAmountForBidder(bidderId: string): Promise<number> {
+        const result = await OrderModel.aggregate([
+            { $match: { createdBy: new mongoose.Types.ObjectId(bidderId) } },
+            {
+                $lookup: {
+                    from: "bids",
+                    localField: "bid",
+                    foreignField: "_id",
+                    as: "bidDetails"
+                }
+            },
+            { $unwind: "$bidDetails" },
+            { $match: { "bidDetails.status": "accepted" } },
+            { $group: { _id: null, total: { $sum: "$bidAmount" } } }
+        ]);
+        return result[0]?.total || 0;
+    }
+
+    // Unique bids this bidder participated in
+    public async getTotalBidsParticipatedForBidder(bidderId: string): Promise<number> {
+        const result = await OrderModel.aggregate([
+            { $match: { createdBy: new mongoose.Types.ObjectId(bidderId) } },
+            { $group: { _id: "$bid" } },
+            { $count: "count" }
+        ]);
+        return result[0]?.count || 0;
     }
 
 
