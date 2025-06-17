@@ -27,6 +27,8 @@ export default function ViewAllBids() {
                 <CountCard
                     title="Total Participated Bids"
                     count={getAllAnalytics?.data.data.totalBidsParticipated || 0}
+                    href="/bidder/myBids"
+
                 />
                 <CountCard
                     title="Total Order Placed"
@@ -65,12 +67,13 @@ export default function ViewAllBids() {
 
             </div>
 
-            <Card className=" w-2/3 h-max flex flex-col sm:flex-row gap-4  justify-center ">
+            <Card className=" w-full h-max flex flex-col sm:flex-row gap-4  justify-center ">
                 {isLoading ? (
                     <p>Loading chart...</p>
                 ) : (
                     <div className="flex flex-col items-center">
-                        <h3 className="text-lg font-semibold mb-2">Win Percentage</h3>
+                        <h3 className="text-lg font-semibold ">Win Percentage</h3>
+                        
                         <WinPercentageGauge percentage={getAllAnalytics?.data.data.winningRate || 0} />
                     </div>
                 )}

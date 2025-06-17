@@ -42,11 +42,18 @@ class BidsRepository {
         }
     }
 
+    //seller
     public async getAllBidsByUser(userId: ObjectId): Promise<any[] | null> {
         try {
             return await BidsModel.find({ createdBy: userId })
                 .populate("category")
                 .populate("createdBy")
+                .populate({
+                    path: "orders",
+                    populate: {
+                        path: "createdBy"
+                    }
+                })
                 .lean();
         } catch (error: any) {
             throw new Error(`Error getting all bids by user: ${error.message}`);
@@ -641,10 +648,40 @@ class BidsRepository {
     //---------------------SELLER ANYLYTICS ROUTE END----------------------------------------------//
 
 
+
+    //---------------------Bidder ANYLYTICS ROUTE -----------------------------------
     // Count all orders by this bidder
     public async getTotalOrdersForBidder(bidderId: string): Promise<number> {
         return OrderModel.countDocuments({ createdBy: new mongoose.Types.ObjectId(bidderId) });
+
     }
+
+    public async getOrdersInfoForBidder(bidderId: string): Promise<{ totalCount: number; orders: any[] }> {
+        const orders = await OrderModel.find({
+            createdBy: new mongoose.Types.ObjectId(bidderId),
+        })  
+            
+            .populate({
+                path: "bid",
+                select: "name description status totalPrice maxtotalPrice createdBy bidPublishedDate durationInDays",
+                populate:{
+                    path:"createdBy"
+                }
+            })
+            .populate({
+                path: "createdBy",
+                select: "name", // optional: bidder's name if needed
+            })
+            .lean();
+
+        const totalCount = orders.length;
+
+        return {
+            totalCount,
+            orders,
+        };
+    }
+
 
     // Count accepted orders for this bidder (linked bid must be 'accepted' status)
     public async getAcceptedOrdersForBidder(bidderId: string): Promise<number> {

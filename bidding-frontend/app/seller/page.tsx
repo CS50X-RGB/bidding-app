@@ -24,6 +24,7 @@ export default function SellerPage() {
                 <CountCard
                     title="Total Bids"
                     count={getAllAnalytics?.data.data.totalBids || 0}
+                    href="/seller/view"
                 />
 
                 {/* Currency-formatted values */}

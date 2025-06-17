@@ -117,13 +117,15 @@ class AnalyticsService {
       totalOrdersAccepted,
       totalAmountPlaced,
       totalAmountAccepted,
-      totalBidsParticipated
+      totalBidsParticipated,
+      totalOrdersInfo
     ] = await Promise.all([
       this.bidRepository.getTotalOrdersForBidder(bidderId),
       this.bidRepository.getAcceptedOrdersForBidder(bidderId),
       this.bidRepository.getTotalBidAmountForBidder(bidderId),
       this.bidRepository.getAcceptedBidAmountForBidder(bidderId),
-      this.bidRepository.getTotalBidsParticipatedForBidder(bidderId)
+      this.bidRepository.getTotalBidsParticipatedForBidder(bidderId),
+      this.bidRepository.getOrdersInfoForBidder(bidderId)
     ]);
 
     const winningRate =
@@ -138,6 +140,7 @@ class AnalyticsService {
       totalAmountPlaced,
       totalAmountAccepted,
       totalBidsParticipated,
+      totalOrdersInfo,
       winningRate: `${winningRate.toFixed(2)}%`
     };
 
