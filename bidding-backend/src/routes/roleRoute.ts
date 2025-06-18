@@ -17,6 +17,8 @@ router.get('/:name',
     roleMiddleware.getRole.bind(roleMiddleware),
     roleService.getRoleId.bind(roleService),
 );
+router.get("/all/permissions", roleService.getPermissions.bind(roleService));
+router.put("/update/permissions", roleService.updatePermissions.bind(roleService));
 
-router.get('/all/roles',roleService.getRoles.bind(roleService));
+router.get('/all/roles', roleService.getRoles.bind(roleService));
 export default router;

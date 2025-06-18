@@ -53,8 +53,13 @@ export default function Page() {
               maximumFractionDigits: 0
             }).format(getAllAnalytics?.data.data.totalBidValues || 0)}
           />
+
           <CountCard
-            title="Total Bids Accepted Value"
+            title="Accepted Bids"
+            count={getAllAnalytics?.data.data.totalBidsCountByStatus.accepted}
+          />
+          <CountCard
+            title="Accepted bids value"
             count={new Intl.NumberFormat('en-IN', {
               style: 'currency',
               currency: 'INR',
@@ -62,7 +67,11 @@ export default function Page() {
             }).format(getAllAnalytics?.data.data.totalBidsIAcceptedValue || 0)}
           />
           <CountCard
-            title="Total Bids Inprogress Value"
+            title="Inprogress Sellers"
+            count={getAllAnalytics?.data.data.totalBidsCountByStatus.inprogress}
+          />
+          <CountCard
+            title="Inprogress Bids Value"
             count={new Intl.NumberFormat('en-IN', {
               style: 'currency',
               currency: 'INR',
@@ -77,6 +86,8 @@ export default function Page() {
             title="Total Active Sellers"
             count={getAllAnalytics?.data.data.userData.SELLER}
           />
+
+
         </div>
 
 

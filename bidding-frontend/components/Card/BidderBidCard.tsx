@@ -1,10 +1,14 @@
+import { getData } from '@/core/api/apiHandler';
+import { accountRoutes } from '@/core/api/apiRoutes';
 import { Card, CardHeader, CardBody, Image, CardFooter, User, Accordion, AccordionItem } from '@heroui/react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import React from 'react';
+import React, { use } from 'react';
 
 type Props = {
     bid: any;
     orders: any[]; // ✅ better type
+    user:any;
 };
 
 function formatDateTime(dateString: string): string {
@@ -22,7 +26,14 @@ function formatDateTime(dateString: string): string {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
-export default function BidderBidCard({ bid, orders }: Props) {
+export default function BidderBidCard({ bid, orders,user }: Props) {
+
+   
+    console.log("user id: ",user._id);
+    console.log("accepted by ",bid.acceptedBy);
+    
+    
+
     const bidOrders = orders.filter(order => order.bid?._id === bid._id);
 
     return (
@@ -35,7 +46,7 @@ export default function BidderBidCard({ bid, orders }: Props) {
                     <h4 className="font-light text-sm">Base Price RS {bid.totalPrice}</h4>
 
                 </div>
-                <div className="">
+                <div className="flex flex-row space-x-2 items-center">
                     <span
                         className={
                             bid.status === "approve"
@@ -52,9 +63,13 @@ export default function BidderBidCard({ bid, orders }: Props) {
                         ●
                     </span>
                     <small className="ml-1">{bid.status}</small>
+                    {bid.status==="accepted" && bid.acceptedBy==user._id &&(
+                        <span>👑</span>
+                    )}
+                    {bid.status==="accepted" && bid.acceptedBy!=user._id &&(
+                        <p>😞</p>
+                    )}
                 </div>
-
-
 
             </CardHeader>
             <CardBody className="overflow-visible py-2">
@@ -116,7 +131,7 @@ export default function BidderBidCard({ bid, orders }: Props) {
                     </AccordionItem>
                 </Accordion>
 
-                
+
             </CardFooter>
         </Card>
     );

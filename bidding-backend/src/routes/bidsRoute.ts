@@ -81,7 +81,7 @@ router.get("/get/my/inprogress",
     bidsService.getMyInprogressBids.bind(bidsService)
 )
 router.get("/all/approvedbids",
-    userMiddleware.verify.bind(userMiddleware),
+    //userMiddleware.verify.bind(userMiddleware),
     bidsService.getApprovedBid.bind(bidsService)
 )
 

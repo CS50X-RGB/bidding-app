@@ -8,13 +8,16 @@ export const accountRoutes = {
   deleteById: "/user/remove",
   allUsers: '/user/all-users',
   getUsersByRole: (role: string) => `/user/role/${role}`,
-  getUserById:(id:string)=>`/user/${id}`
-  
+  getUserById: (id: string) => `/user/${id}`
+
 
 }
 export const rolesRoutes = {
-  getAll: "/roles/all",
+  getAll: "/role/all/roles",
+  getPermission: "/role/all/permissions",
+  update: "/role/update/permissions"
 }
+
 export const categoryRoutes = {
   getAll: "category/all/categories"
 }
@@ -35,15 +38,15 @@ export const bidsRoutes = {
   acceptOrder: "/bids/accepted/",
   getApprovedBids: "/bids/all/approvedbids",
   getBidsBySellerId: "/bids/allbids/:sellerId",
-  getSellerBids: (id:string)=>`/bids/user/${id}`,
+  getSellerBids: (id: string) => `/bids/user/${id}`,
   getBidderBids: (id: string) => `/bids/user/bidder/all/bids/${id}`,
-  getBid:(id:string)=>`/bids/get/bid/bidId/${id}`,
-  
+  getBid: (id: string) => `/bids/get/bid/bidId/${id}`,
+
 
 }
 
 export const analyticsRoutes = {
   getAnalyticsValue: "/analytics/total",
-  getSellerAnalytics:"/analytics/seller",
-  getBidderAnalytics:"analytics/bidder"
+  getSellerAnalytics: "/analytics/seller",
+  getBidderAnalytics: "analytics/bidder"
 }

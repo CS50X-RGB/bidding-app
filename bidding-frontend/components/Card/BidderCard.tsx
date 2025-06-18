@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { queryClient } from "@/app/providers";
 
-export default function BidderCard({ bid }: any) {
+export default function BidderCard({ bid,showPlaceBid = true  }: any) {
     const router = useRouter();
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const minBidAmount = bid.maxtotalPrice + (bid.incrementalValue ?? 0);
@@ -33,7 +33,7 @@ export default function BidderCard({ bid }: any) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         //  e.preventDefault();
         const amount = Number(bidAmount);
-        const minBid = bid.maxtotalPrice + (bid.incrementalValue ?? 0); 
+        const minBid = bid.maxtotalPrice + (bid.incrementalValue ?? 0);
         if (isNaN(amount) || amount < minBid) {
             toast.error(`Bid must be at least Rs ${minBid}`);
             return;
@@ -72,7 +72,11 @@ export default function BidderCard({ bid }: any) {
                     </div>
                     <div className="flex flex-col items-center gap-4 justify-center">
                         <h1 className="font-bold text-3xl">Rs {bid.maxtotalPrice}</h1>
-                        <Button color="primary" className="rounded-xl" onPress={() => onOpen()}>Place Bid</Button>
+                        {localStorage.getItem("ROLE") === "BIDDER" && (
+                            <Button color="primary" className="rounded-xl" onPress={() => onOpen()}>
+                                Place Bid
+                            </Button>
+                        )}
                     </div>
                 </CardBody>
             </Card>

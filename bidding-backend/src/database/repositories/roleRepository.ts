@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Role from "../models/roleModel"
 import { RoleInterface, RoleInterfaceGet } from "../../interfaces/roleInterface";
 
@@ -49,6 +50,48 @@ class RoleRepository {
       return await Role.find({ name: regex }).lean();
     } catch (error) {
       throw new Error(`Error while searching roles`);
+    }
+  }
+
+  public async togglePermission(roleId: any, permissionId: any[]) {
+    try {
+      const role = await Role.findById(roleId);
+
+      if (!role) {
+        throw new Error("Role not found");
+      }
+      const toAdd: any[] = [];
+      const toRemove: any[] = [];
+      permissionId.forEach((permId: any) => {
+        const objectId = new mongoose.Types.ObjectId(permId);
+        const exists = role.permissions.some((p: any) => p.equals(objectId));
+        if (exists) {
+          toRemove.push(objectId);
+        } else {
+          toAdd.push(objectId);
+        }
+      });
+      if (toAdd.length > 0) {
+        await Role.findByIdAndUpdate(roleId, {
+          $addToSet: { permissions: { $each: toAdd } },
+        });
+      }
+      console.log(toAdd, "To Add");
+      if (toRemove.length > 0) {
+        await Role.findByIdAndUpdate(roleId, {
+          $pull: { permissions: { $in: toRemove } },
+        });
+      }
+      console.log(toRemove, "remove");
+
+
+
+      const updatedRole = await Role.findById(roleId);
+      console.log(updatedRole);
+      return updatedRole;
+    } catch (error) {
+      console.error("Error while toggling permission:", error);
+      throw new Error("Failed to toggle permission for role");
     }
   }
 }

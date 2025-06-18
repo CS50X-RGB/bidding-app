@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { useAsyncList } from "@react-stately/data";
 import { localBackend } from "@/core/api/axiosInstance";
+import { currentUser } from "@/core/api/localStorageKeys";
 
 export default function App() {
   const [loginState, setLoginState] = useState({
@@ -71,21 +72,48 @@ export default function App() {
         setisLoadingLogin(false);
         return;
       }
-      localStorage.setItem("currentUser", JSON.stringify(data.data.data));
-      Cookies.set('auth', data.data.data.token);
+      console.log(data.data.data, "data");
+      localStorage.setItem(currentUser, JSON.stringify(data.data.data));
+      Cookies.set("nextToken", data.data.data.token);
+      const permissions: any[] = [];
+      if (data.data.data.permissions && data.data.data.permissions) {
+        data?.data?.data?.permissions.map((p: any) => {
+          const obj = {
+            name: p.name,
+            link: p.link
+          }
+          permissions.push(obj);
+        });
+        let adminNav = {};
+        if (data.data.data.role === "ADMIN") {
+          adminNav = {
+            name: "Permissions",
+            link: "/admin/permission"
+          }
+          permissions.push(adminNav);
+        }
+        
+        const links = permissions.map((p) => p.link);
+        Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" });
+      }
+      Cookies.set(currentUser, data.data.data.token);
       setisLoadingLogin(false);
       toast.success('Logged In Successfully', {
         position: "top-right",
         className: "bg-blue-400"
       });
       const { role } = data.data.data;
+      localStorage.setItem("ROLE", role);
+      Cookies.set("userRole", role);
+
       if (role === 'ADMIN') {
-        router.push("/admin");
+        router.push(permissions[0].link);
       } else if (role === 'BIDDER') {
-        router.push('/bidder');
+        router.push(permissions[0].link);
       } else if (role === 'SELLER') {
-        router.push('/seller');
+        router.push(permissions[0].link);
       }
+
     },
     onError: (error: any) => {
       console.error(error);

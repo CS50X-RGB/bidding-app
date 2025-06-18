@@ -111,7 +111,26 @@ export default function AdminBidCard({ bid }: any) {
                         </div>
                     </div>
                     <div className="flex flex-col items-center gap-4 justify-center">
-                        <h1 className="font-bold text-3xl">Rs {bid.maxtotalPrice}</h1>
+                        
+                        {bid.status === "accepted" && (
+                            <>
+                                <h1 className="font-bold text-3xl"><span className="text-lg text-gray-300">Final Price  </span> Rs {bid.maxtotalPrice}</h1>
+                                <h1 className="text-sm text-gray-400">Base Price Rs {bid.totalPrice}</h1>
+                            </>
+                        )}
+                        {bid.status === "inprogress" && (
+                            <>
+                                <h1 className="font-bold text-3xl"><span className="text-lg text-gray-300">Current Price  </span> Rs {bid.maxtotalPrice}</h1>
+                                <h1 className="text-sm text-gray-400">Base Price Rs {bid.totalPrice}</h1>
+                            </>
+                        )}
+
+                        {bid.status != "inprogress" && bid.status != "accepted" && (
+                            <>
+                                <h1 className="font-bold text-3xl"><span className="text-lg text-gray-300">Base Price  </span> Rs {bid.totalPrice}</h1>
+
+                            </>
+                        )}
                         {bid.incrementalValue && (
                             <div className=""> incremental Value {bid.incrementalValue}</div>
                         )}
@@ -177,7 +196,7 @@ export default function AdminBidCard({ bid }: any) {
                     <Button onPress={onClose}>Close</Button>
                     <Button
                         color="danger"
-                         isLoading={isDeleting}
+                        isLoading={isDeleting}
                         onPress={handleDeleteBid}
                     >
                         Submit

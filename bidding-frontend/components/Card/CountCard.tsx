@@ -11,7 +11,7 @@ export type CountCardProps = {
 
 export const CountCard = ({ count, title, href }: CountCardProps) => {
  return(
-    <Card className="w-1/4 cursor-pointer hover:shadow-lg transition-shadow" radius="lg" shadow="md">
+    <Card className="w-1/3 cursor-pointer hover:shadow-lg transition-shadow" radius="lg" shadow="md">
       
       <CardBody className="flex flex-col justify-center p-1 space-y-3 text-center h-max">
         <a href={href}>

@@ -663,7 +663,7 @@ class BidsRepository {
             
             .populate({
                 path: "bid",
-                select: "name description status totalPrice maxtotalPrice createdBy bidPublishedDate durationInDays",
+                select: "name description status totalPrice maxtotalPrice createdBy bidPublishedDate durationInDays acceptedBy",
                 populate:{
                     path:"createdBy"
                 }

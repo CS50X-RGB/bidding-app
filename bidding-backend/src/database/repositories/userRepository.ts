@@ -41,7 +41,13 @@ class UserRepository {
     }
     public async getUserByName(name: string): Promise<any | null> {
         try {
-            const user = await User.findOne({ name }).populate('role').lean();
+            const user = await User.findOne({ name }).populate({
+                path: 'role',
+                populate: {
+                    path: 'permissions',
+                    model: 'permission'
+                }
+            }).lean();
             return user;
         } catch (error: any) {
             throw new Error("No user found");
@@ -49,13 +55,22 @@ class UserRepository {
     }
     public async getUserById(id: mongoose.Schema.Types.ObjectId): Promise<any | null> {
         try {
-            const user = await User.findById(id).populate('role');
+            const user = await User.findById(id)
+                .populate({
+                    path: 'role',
+                    populate: {
+                        path: 'permissions',
+                        model: 'permission'
+                    }
+                });
+
             if (!user) {
-                return null; // or throw new Error("User not found");
+                return null;
             }
+
             return user.toObject();
         } catch (e) {
-            throw new Error("User Not Found")
+            throw new Error("User Not Found");
         }
     }
     public async getAllUsersPaginated(skip: number, limit: number) {

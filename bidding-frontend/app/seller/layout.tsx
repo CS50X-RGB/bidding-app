@@ -6,16 +6,49 @@ import React, { useEffect, useState } from "react";
 import { Spinner, User, Link, Button, Chip } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { currentUser } from "@/core/api/localStorageKeys";
 
-export default function Supplier({ children }: React.ReactNode) {
+export default function Supplier({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<any>({});
+
+    const [chips, setChips]: any[] = useState<any[]>([]);
 
     const { data: getProfile, isFetched, isFetching } = useQuery({
         queryKey: ["getProfile"],
         queryFn: async () => {
-            return await getData(accountRoutes.getMineProfile, {});
+            const url = localStorage.getItem("ROLE") === "ADMIN" ? accountRoutes.getMyProfile : accountRoutes.getMineProfile;
+            return await getData(url, {});
         },
     });
+
+    useEffect(() => {
+        if (isFetched && getProfile?.data) {
+            const permissions: any[] = [];
+            if (getProfile.data.data.role && getProfile.data.data.role.permissions) {
+                getProfile?.data?.data?.role?.permissions.map((p: any) => {
+                    const obj = {
+                        name: p.name,
+                        link: p.link
+                    }
+
+                    permissions.push(obj);
+
+                });
+                if (getProfile.data.data.role && getProfile.data.data.role?.name === "ADMIN") {
+                    const adminNav = {
+                        name: "Permissions",
+                        link: "/admin/permission"
+                    }
+
+                    permissions.push(adminNav);
+                }
+                //const links = permissions.map((p) => p.link);
+                //  Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" });
+                setChips(permissions);
+            }
+            setUser(getProfile.data.data);
+        }
+    }, [isFetched, getProfile]);
     const router = useRouter();
     // Set user data when fetched
     useEffect(() => {
@@ -42,38 +75,21 @@ export default function Supplier({ children }: React.ReactNode) {
     //     }
     // ];
     const handleLogout = () => {
-        Cookies.remove('auth');
-        localStorage.removeItem('currentUser');
+        Cookies.remove(currentUser);
+        Cookies.remove("nextToken");
+        Cookies.remove("allowedLinks");
+        Cookies.remove("userRole");
+        localStorage.removeItem("ROLE");
+        localStorage.removeItem(currentUser);
         router.push("/login");
     }
-    const chips = [
-        {
-            name: "Dashboard",
-            link: "/seller",
-        },
-        {
-            name: "Create Bid",
-            link: "/seller/create",
-        },
-        {
-            name: "View Bids",
-            link: "/seller/view"
-        },
-        {
-            name: "View Inprogress Bids",
-            link: "/seller/inprogress"
-        },
-        {
-            name: "View Completed Bids",
-            link: "/seller/accept"
-        }
-    ];
+
     return (
         <>
             <div className="flex flex-row justify-between p-4 w-full items-center">
                 <div className="flex flex-col p-4 gap-2">
-                    <h1 className="text-2xl font-bold">Seller Dashboard</h1>
-                    <div className="flex w-full gap-4 flex-row">
+                    <h1 className="text-2xl font-bold">{getProfile?.data?.data?.role?.name} Dashboard</h1>
+                    <div className="flex flex-wrap gap-4 flex-row">
                         {chips.map((c: any, index: number) => {
                             return (
                                 <Chip key={index} onClick={() => router.push(c.link)} color="primary" className="cursor-pointer">

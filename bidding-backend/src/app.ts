@@ -9,6 +9,7 @@ import { RoleInterface } from './interfaces/roleInterface';
 import { CategoryInterface } from './interfaces/categoryInterface';
 import CategoryService from './services/categoryService';
 import './cron/expireBidsJob'
+import { PermissionCreate } from './interfaces/permissionInterface';
 const app = express();
 
 
@@ -23,6 +24,57 @@ app.use(responseFormatter);
 app.use('/api', routes);
 
 connectDB();
+
+const permissions: PermissionCreate[] = [
+   {
+      name: "Dashboard",
+      link: "/admin/",
+   }, {
+      name: "Create Users",
+      link: "/admin/create"
+   },
+   {
+      name: "View All Bids",
+      link: "/admin/view"
+   },
+   {
+      name: "View All Sellers",
+      link: "/admin/allSeller"
+   },
+   {
+      name: "View All Bidders",
+      link: "/admin/allBidder"
+   },
+
+   {
+      name: "Bidder DashBoard",
+      link: "/bidder"
+   },
+   {
+      name: "Live Bids",
+      link: "/bidder/view",
+   },
+   {
+      name: "Seller Dashboard",
+      link: "/seller",
+   },
+   {
+      name: "Create Bid",
+      link: "/seller/create",
+   },
+   {
+      name: "View Bids",
+      link: "/seller/view"
+   },
+   {
+      name: "View Inprogress Bids",
+      link: "/seller/inprogress"
+   },
+   {
+      name: "View Completed Bids",
+      link: "/seller/accept"
+   },
+];
 
 export const roles: RoleInterface[] = [
    {
@@ -50,6 +102,7 @@ const userService = new UserService();
 const roleService = new RoleService();
 const categoryService = new CategoryService();
 categoryService.createCategories(categories);
+roleService.createPermission(permissions);
 roleService.createRoles(roles);
 userService.createAdmin();
 
