@@ -25,7 +25,7 @@ export default function Supplier({ children }: { children: React.ReactNode }) {
     // After fetching the user profile, extract permissions, store allowed links in cookies, and update user state.
     useEffect(() => {
         if (isFetched && getProfile?.data) {
-            const permissions: any[] = [];
+            let permissions: any[] = [];
             if (getProfile.data.data.role && getProfile.data.data.role.permissions) {
                 getProfile?.data?.data?.role?.permissions.map((p: any) => {
                     const obj = {
@@ -46,6 +46,10 @@ export default function Supplier({ children }: { children: React.ReactNode }) {
                 }
                 const links = permissions.map((p) => p.link);
                 Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" });
+                
+                if (links.includes('/admin/bid')) {
+                    permissions = permissions.filter((p) => p.link !== '/admin/bid');
+                }
                 setChips(permissions);
             }
             setUser(getProfile.data.data);
