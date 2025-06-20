@@ -5,6 +5,9 @@ import React from 'react'
 type Props = {
     bid: any; // You can replace `any` with a proper type later
 };
+
+
+//fucntion to format date and time
 function formatDateTime(dateString: string): string {
     const d = new Date(dateString)
     const pad = (n: number) => (n < 10 ? '0' + n : n)

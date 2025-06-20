@@ -1,6 +1,7 @@
 import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from "@heroui/react";
 import React from "react";
 
+// Interface for props of a custom modal component.
 interface CustomModalInterface {
     isOpen: any,
     onOpenChange: () => void,

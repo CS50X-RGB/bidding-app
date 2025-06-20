@@ -6,6 +6,7 @@ import { bidsRoutes } from "@/core/api/apiRoutes"
 import { useQuery } from "@tanstack/react-query"
 
 export default function LiveBids() {
+    //fetches only the approed bids
     const { data: allBids, isFetching } = useQuery({
         queryKey: ["get-approved-bids"],
         queryFn: async () => {
@@ -14,6 +15,7 @@ export default function LiveBids() {
     });
 
     console.log(allBids)
+    //displaying the skeleton card whild bids is fetched 
     if (isFetching) {
         return (
             <div className="flex flex-col gap-4 items-center w-full">

@@ -12,6 +12,8 @@ class RoleService {
         this.permissionRepository = new PermissionRepo();
     }
 
+
+    // Creates a new role if it does not already exist.
     public async createRole(req: Request, res: Response): Promise<any | null> {
         try {
             console.log("createRole endpoint hit with body:", req.body);
@@ -34,6 +36,8 @@ class RoleService {
             return res.sendError(null, "Error while creating role", 400);
         }
     }
+
+    // Retrieves a role's ID by its name.
     public async getRoleId(req: Request, res: Response) {
         try {
             const { name } = req.params;
@@ -44,6 +48,8 @@ class RoleService {
             return res.sendError(null, "Error while getting the role", 400);
         }
     }
+
+    // Deletes a role by its name.
     public async deleteRole(req: Request, res: Response) {
         try {
             const { name }: RoleInterface = req.body;
@@ -53,6 +59,8 @@ class RoleService {
             throw new Error(`Error while deleting role`);
         }
     }
+
+    // Creates multiple roles if they do not already exist.
     public async createRoles(names: RoleInterface[]): Promise<void> {
         try {
             for (const role of names) {
@@ -68,6 +76,8 @@ class RoleService {
             console.error('Error while creating roles:', error.message);
         }
     }
+
+    // Retrieves all roles, optionally filtered by a search prefix.
     public async getRoles(req: Request, res: Response) {
         try {
             const search = req.query.search as string | undefined;
@@ -84,6 +94,7 @@ class RoleService {
         }
     }
 
+    // Updates permissions for multiple roles.
     public async updatePermissions(req: Request, res: Response) {
         try {
             const { roles }: any = req.body;
@@ -98,6 +109,8 @@ class RoleService {
             return res.sendError(error, "Error while updating the permissions", 400);
         }
     }
+
+    // Retrieves all permissions.
     public async getPermissions(req: Request, res: Response) {
         try {
             const getAllPermission = await this.permissionRepository.getPermissions();
@@ -107,6 +120,7 @@ class RoleService {
         }
     }
 
+    // Creates multiple permissions if they do not already exist.
     public async createPermission(permissions: PermissionCreate[]) {
         try {
             for (const permission of permissions) {

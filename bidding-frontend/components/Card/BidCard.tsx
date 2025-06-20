@@ -5,7 +5,12 @@ import { useRouter } from "next/navigation";
 
 export default function BidCard({ bid }: any) {
     console.log(bid, "Bid");
+
+    // Define allowed color types for status indicators.
     type colors = "primary" | "warning" | "success" | "danger" | "default" | "secondary"
+
+
+    // Return a color based on the bid status.
     const getStatusColor = (status: any): colors => {
         switch (status) {
             case "inprogress":
@@ -19,6 +24,7 @@ export default function BidCard({ bid }: any) {
         }
     }
 
+    // Find the order with the highest bid amount.
     const highestOrder = bid.orders?.reduce((prev: any, current: any) => {
         return (prev.bidAmount || 0) > (current.bidAmount || 0) ? prev : current;
     }, {});
@@ -64,7 +70,7 @@ export default function BidCard({ bid }: any) {
                         {bid.status != "inprogress" && bid.status != "accepted" && (
                             <>
                                 <h1 className="font-bold text-3xl"><span className="text-lg text-gray-300">Base Price  </span> Rs {bid.totalPrice}</h1>
-                                
+
                             </>
                         )}
 

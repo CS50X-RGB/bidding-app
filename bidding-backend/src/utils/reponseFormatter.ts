@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 
+
+// Define a standard response shape for all API responses.
 interface ResponseFormat {
   success: boolean;
   data?: any;
@@ -8,6 +10,7 @@ interface ResponseFormat {
   error?: any;
 }
 
+// Utility to format an object response.
 export const formatResponse = (
   success: boolean,
   data: any = null,
@@ -22,6 +25,8 @@ export const formatResponse = (
     error,
   };
 };
+
+// Utility to format an array response (optional separation for clarity).
 export const formatArrayResponse = (
   success: boolean,
   data: any = null,
@@ -35,12 +40,14 @@ export const formatArrayResponse = (
     error,
   };
 };
+
+// Extend Express Request and Response types to include custom helpers and user info.
 declare global {
   namespace Express {
     interface Request {
-      user? : {
-        name : string,
-        _id : mongoose.Schema.Types.ObjectId
+      user?: {
+        name: string,
+        _id: mongoose.Schema.Types.ObjectId
       }
     }
     interface Response {
@@ -55,6 +62,8 @@ declare global {
   }
 }
 
+
+// Express middleware to attach custom response helpers for consistent API output.
 export const responseFormatter = (
   req: Request,
   res: Response,

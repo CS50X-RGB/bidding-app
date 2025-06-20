@@ -12,6 +12,8 @@ class UserService {
         this.userRepository = new UserRepository();
         this.roleRepository = new RoleRepository();
     }
+
+    // Creates an admin user if one does not already exist.
     public async createAdmin(): Promise<void> {
         try {
             const role = await this.roleRepository.getIdByRole("ADMIN");
@@ -37,6 +39,8 @@ class UserService {
             throw new Error(`Error in Admin creation`);
         }
     }
+
+    // Authenticates a user and returns a token with user details.
     public async login(req: Request, res: Response) {
         try {
             const user: IUserLogin = req.body;
@@ -69,6 +73,8 @@ class UserService {
             throw new Error("Error in Login");
         }
     }
+
+    // Registers a new user account and returns a token.
     public async signUpUser(req: Request, res: Response) {
         try {
             const user: IUserSignin = req.body;
@@ -112,6 +118,7 @@ class UserService {
         }
     }
 
+    // Creates a new user account (admin endpoint, no token generation).
     public async createUser(req: Request, res: Response) {
         try {
             const user: IUserCreate = req.body;
@@ -135,6 +142,8 @@ class UserService {
             throw new Error(`Error creating user`);
         }
     }
+
+    // Retrieves the authenticated user's profile details.    
     public async getProfile(req: Request, res: Response) {
         try {
             if (!req.user) {
@@ -147,6 +156,8 @@ class UserService {
             throw new Error(`Error getting user ${error}`);
         }
     }
+
+    // Toggles or updates the 'isBlocked' status of a user by ID.
     public async updateIsBlocked(req: Request, res: Response) {
         try {
             const userId: any = req.params.id;
@@ -156,6 +167,8 @@ class UserService {
             return res.sendError(error, "Error while getting users", 400);
         }
     }
+
+    // Fetches all users with optional pagination.
     public async getAllUsers(req: Request, res: Response) {
         try {
             const pageParam = req.query.page as string | undefined;
@@ -175,6 +188,8 @@ class UserService {
         }
     }
 
+
+    // Deletes a user by ID.
     public async deleteById(req: Request, res: Response) {
         try {
             const { id }: any = req.params;
@@ -185,6 +200,7 @@ class UserService {
         }
     }
 
+    // Retrieves all users who have the specified role name.
     public async getUsersByRole(req: Request, res: Response) {
         try {
             const roleName = req.params.role.toUpperCase();
@@ -195,6 +211,7 @@ class UserService {
         }
     }
 
+    // Retrieves a single user by their unique ID.
     public async getUserById(req: Request, res: Response) {
         try {
             const userId = req.params.id;

@@ -18,7 +18,7 @@ class BidsRepository {
         this.categoryRepo = new CategoryRepository();
     }
 
-
+    //this api is to creare the bid
     public async createBid(bid: BidInterface): Promise<any | null> {
         try {
             const newBid = await BidsModel.create({
@@ -31,6 +31,7 @@ class BidsRepository {
         }
     }
 
+    //this api is to get the bids data by bidId
     public async getBidById(id: ObjectId): Promise<any | null> {
         try {
             return await BidsModel.findById(id)
@@ -42,7 +43,7 @@ class BidsRepository {
         }
     }
 
-    //seller
+    //this api is for to get user bids by passing user id
     public async getAllBidsByUser(userId: ObjectId): Promise<any[] | null> {
         try {
             return await BidsModel.find({ createdBy: userId })
@@ -60,7 +61,7 @@ class BidsRepository {
         }
     }
 
-    //for admin 
+    //This api fetch all the bids to show on admin view (ADMIN)
     public async getAllBids(): Promise<any[] | null> {
         try {
             return await BidsModel.find() //{ status: { $in: [BidStatus.INPROGRESS, BidStatus.PENDING] } }
@@ -79,6 +80,8 @@ class BidsRepository {
             throw new Error(`Error getting all bids: ${error.message}`);
         }
     }
+
+    //This api fetches all the bids by its category id 
     public async getBidsByCategory(categoryId: any): Promise<any | null> {
         try {
             const bids = await BidsModel.find({
@@ -93,6 +96,8 @@ class BidsRepository {
             throw new Error(`Error fetching bids by category: ${error}`);
         }
     }
+
+    //This api Fetchs the category wise bid count
     public async getBidsCountByCat(): Promise<any | null> {
         try {
             const categories = await this.categoryRepo.getAll();
@@ -113,6 +118,8 @@ class BidsRepository {
             return null;
         }
     }
+
+    //This api is used to push the orders placed insdie the bid document 
     public async pushOrder(bidId: ObjectId, orderId: ObjectId): Promise<any | null> {
         try {
             const bidDoc: any = await BidsModel.findByIdAndUpdate(bidId, {
@@ -141,6 +148,8 @@ class BidsRepository {
             throw new Error(`Error fetching bids by category: ${error}`);
         }
     }
+
+    //this api to get the all accepted orders by seller
     public async getAllAcceptedOrdersByMe(userId: any): Promise<any[] | null> {
         try {
             const bids = await BidsModel.find({
@@ -156,6 +165,8 @@ class BidsRepository {
             throw new Error(`Error fetching accepted orders: ${error.message}`);
         }
     }
+
+    //this api is used to fetch all the accepted order  
     public async getAllAcceptedOrders(): Promise<any[] | null> {
         try {
             const bids = await BidsModel.find({
@@ -171,6 +182,8 @@ class BidsRepository {
             throw new Error(`Error fetching accepted orders: ${error.message}`);
         }
     }
+    
+    //this api is used to get all the rejected order
     public async getAllRejecteddOrders(): Promise<any[] | null> {
         try {
             const bids = await BidsModel.find({
@@ -186,6 +199,8 @@ class BidsRepository {
             throw new Error(`Error fetching accepted orders: ${error.message}`);
         }
     }
+    
+    //this api is used to fetch the oders by bidid
     public async getOrdersByBidId(bidId: ObjectId): Promise<any | null> {
         try {
             const bid = await BidsModel.findById(bidId)
@@ -209,6 +224,8 @@ class BidsRepository {
             throw new Error(`Error while getting order ${error}`)
         }
     }
+
+    //this api is used to accepet order on the bid
     public async acceptOrder(bidId: ObjectId, orderID: ObjectId): Promise<any | null> {
         try {
             const orderObj = await OrderModel.findById(orderID);
@@ -237,6 +254,7 @@ class BidsRepository {
         }
     }
 
+    //this api is used to reject the order
     public async rejectOrder(bidId: ObjectId): Promise<any | null> {
         try {
             const bid = await BidsModel.findByIdAndUpdate(
@@ -261,6 +279,7 @@ class BidsRepository {
         }
     }
 
+    //This api is use to get the inprogress bids for the seller 
     public async getMyBidsInProgress(userId: ObjectId): Promise<any | null> {
         try {
             const bids = await BidsModel.find({
@@ -272,6 +291,8 @@ class BidsRepository {
             throw new Error(`Error during getting Bids ${error}`);
         }
     }
+
+    //-----------------------ADMIN ANALYTICS START------------------------------//
 
     //get total bids count
     public async getTotalBidsCount(): Promise<any | null> {
@@ -349,6 +370,10 @@ class BidsRepository {
         }
     }
 
+    //-----------------------ADMIN ANALYTICS END------------------------------//
+
+
+    //This API is used is approve bid status (when admin sends request)
     public async approveBid(bidId: ObjectId): Promise<any | null> {
         try {
             return await BidsModel.findByIdAndUpdate(
@@ -363,6 +388,8 @@ class BidsRepository {
             throw new Error(`Error in approving bids: ${error}`);
         }
     }
+
+    //This API is used is approve bid status (when admin sends request)
     public async rejectBid(bidId: ObjectId): Promise<any | null> {
         try {
             return await BidsModel.findByIdAndUpdate(
@@ -378,6 +405,7 @@ class BidsRepository {
         }
     }
 
+    //This api is used to get only the approved bids for the bidder View (BIDDER)
     public async getApprovedBids(): Promise<any[] | null> {
         try {
             return await BidsModel.find({
@@ -408,8 +436,7 @@ class BidsRepository {
         }
     }
 
-
-
+    //This api is to fetch all the bids of a seller by seller id as an object
     public async getBidsBySellerId(sellerId: ObjectId): Promise<any[] | null> {
         try {
             // Example: Fetch bids from DB
@@ -423,6 +450,7 @@ class BidsRepository {
         }
     }
 
+     //This api is to fetch all the bids of a user by user id as a  string
     public async getAllBidsBySeller(userId: string): Promise<any[] | null> {
         try {
             // Convert string to Mongo ObjectId
@@ -444,6 +472,7 @@ class BidsRepository {
         }
     }
 
+    //This api is use to get all the bid of a user along with orders
     public async getAllBidsWithOrdersByUser(userId: string): Promise<any[] | null> {
         try {
             const objectId = new Types.ObjectId(userId);
@@ -473,6 +502,7 @@ class BidsRepository {
         }
     }
 
+    //This api is used to get the particular bid with bid id
     public async getBidByBidId(bidId: string): Promise<any | null> {
         try {
             const objectId = new Types.ObjectId(bidId);
@@ -496,6 +526,7 @@ class BidsRepository {
         }
     }
 
+    //This api is use to update the bidder live bids view by checking the expied bids using cron job
     public async updateExpiredBids(): Promise<void> {
         try {
             const now = new Date();
@@ -541,6 +572,7 @@ class BidsRepository {
         }
     }
 
+    //This api is use to delete the bid by bidId
     public async deleteBidById(bidId: string): Promise<any | null> {
         try {
             const bid = await bidsModel.findById(bidId);
@@ -575,6 +607,7 @@ class BidsRepository {
         }
     }
 
+    //Helper function to for delete bid
     private extractKeyFromUrl(url: string): string {
         const urlObj = new URL(url);
         return urlObj.pathname.slice(1);
@@ -649,7 +682,8 @@ class BidsRepository {
 
 
 
-    //---------------------Bidder ANYLYTICS ROUTE -----------------------------------
+    //---------------------Bidder ANYLYTICS ROUTE ------------------------------------------------//
+
     // Count all orders by this bidder
     public async getTotalOrdersForBidder(bidderId: string): Promise<number> {
         return OrderModel.countDocuments({ createdBy: new mongoose.Types.ObjectId(bidderId) });
@@ -681,7 +715,6 @@ class BidsRepository {
             orders,
         };
     }
-
 
     // Count accepted orders for this bidder (linked bid must be 'accepted' status)
     public async getAcceptedOrdersForBidder(bidderId: string): Promise<number> {
@@ -739,7 +772,7 @@ class BidsRepository {
         return result[0]?.count || 0;
     }
 
-
+    //---------------------Bidder ANYLYTICS ROUTE ------------------------------------------------//
 
 
 

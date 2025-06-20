@@ -15,6 +15,7 @@ import {
 } from "@heroui/table";
 
 export default function Seller() {
+  // Fetch all users with the role 'SELLER'.
   const { data: allSellers, isFetching: loadingSellers } = useQuery({
     queryKey: ["get-all-sellers"],
     queryFn: async () => {
@@ -25,7 +26,10 @@ export default function Seller() {
   console.log(allSellers);
 
 
+  // Get the list of sellers or an empty array if no data is available.
   const sellers = allSellers?.data?.data?.users ?? [];
+
+  // Find the maximum bid count among all sellers.
   const maxBidCount = Math.max(...sellers.map((b: any) => b.bidCount ?? 0));
 
 

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { MONGODB_URI } from '../config/config';
 
+
+//This function is used to connect the backend with database
 const connectDB = async () => {
     try {
         await mongoose.connect(MONGODB_URI);

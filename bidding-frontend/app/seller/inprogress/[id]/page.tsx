@@ -10,7 +10,7 @@ import BidCardSkeleton from "@/components/Card/BidLoadingCard";
 
 export default function ViewInProgress() {
     const { id } = useParams();
-
+    //feching the bid details os bid by using bid id
     const { data: getBidDetails, isFetched, isFetching } = useQuery({
         queryKey: ["getBidDetails", id],
         queryFn: async () => {

@@ -6,6 +6,7 @@ import BidCardSkeleton from "@/components/Card/BidLoadingCard";
 import BidCard from "@/components/Card/PressableCard";
 
 export default function InrogressPage() {
+    //fetching the inprogess  bids
     const { data: getInProgress, isFetching } = useQuery({
         queryKey: ["getInProgress"],
         queryFn: async () => {

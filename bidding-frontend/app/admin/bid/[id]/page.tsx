@@ -12,6 +12,8 @@ import { useParams } from "next/navigation"
 export default function bidDetilsPage() {
     const params = useParams();
     const id = params?.id
+
+    // Fetch bid details by ID if a valid ID is provided.
     const { data: bidDetails, isFetched, isFetching } = useQuery({
         queryKey: ["get-bid"],
         queryFn: async () => {

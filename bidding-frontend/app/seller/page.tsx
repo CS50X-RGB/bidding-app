@@ -8,6 +8,7 @@ import { CountCard } from "@/components/Card/CountCard";
 
 export default function SellerPage() {
 
+    //fetching the seller analytics
     const { data: getAllAnalytics, isLoading } = useQuery({
         queryKey: ["get-analytics"],
         queryFn: async () => {

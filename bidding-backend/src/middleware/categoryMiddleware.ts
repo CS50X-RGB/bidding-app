@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 
 class CategoryMiddleware{
     constructor(){}
+
+    //Middleware function for creting category
     public async createCategory(req : Request, res : Response,next : NextFunction){
         try {
             const { name } = req.body;
@@ -13,6 +15,8 @@ class CategoryMiddleware{
             return res.sendError(error.message,"An unexpected error occurred",500);
         }
     }
+
+    //Middleware function for getting category
     public async getCategory(req : Request, res : Response,next : NextFunction){
         try {
             const { name } = req.params;

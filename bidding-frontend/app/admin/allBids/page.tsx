@@ -6,6 +6,8 @@ import { bidsRoutes } from "@/core/api/apiRoutes";
 import { useQuery } from "@tanstack/react-query";
 
 export default function AllBidsAdmin() {
+
+  //fetch all bids
   const { data: allBids, isFetching } = useQuery({
     queryKey: ["get-all-bids"],
     queryFn: async () => {

@@ -24,6 +24,8 @@ export default function BidCreate() {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [files, setFiles] = useState<any[]>([]);
     const [catToShow, setCatToShow] = useState<any[]>([]);
+    
+    //fetches all the categories 
     let list = useAsyncList({
         async load({ filterText }) {
             let res = await fetch(`${localBackend}/${categoryRoutes.getAll}/?search=${filterText}`, {});
@@ -36,6 +38,8 @@ export default function BidCreate() {
         },
     });
     const router = useRouter();
+    
+    // Create a new bid, show success toast, and redirect the seller on success.
     const createBid = useMutation({
         mutationKey: ["create-bid"],
         mutationFn: async (data: any) => {
@@ -54,6 +58,8 @@ export default function BidCreate() {
             setIsSubmitting(false);
         }
     });
+
+    // Handle bid form submission: build FormData, append fields, and trigger the create bid mutation.
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -84,6 +90,8 @@ export default function BidCreate() {
 
         createBid.mutate(formData);
     }
+
+    //handle the changes in the form feild
     const handleChange = (type: Type, e: any) => {
         if (!e || e === "") return;
         switch (type) {

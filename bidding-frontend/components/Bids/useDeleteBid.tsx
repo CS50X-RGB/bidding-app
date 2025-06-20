@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteData } from "@/core/api/apiHandler";
 import { bidsRoutes } from "@/core/api/apiRoutes";
 
-// Mutation function to call DELETE API
+// Mutation function to call DELETE API to delete the bid
 const deleteBidById = async (bidId: string) => {
   // For consistency, use your bidsRoutes
   const url = bidsRoutes.deleteBid.replace(":bidId", bidId);

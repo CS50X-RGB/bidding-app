@@ -14,6 +14,8 @@ export default function Admin({ children }: { children: React.ReactNode }) {
 
     const [chips, setChips]: any[] = useState<any[]>([]);
 
+
+    //function to fetch the user profile
     const { data: getProfile, isFetched, isFetching } = useQuery({
         queryKey: ["getProfile"],
         queryFn: async () => {
@@ -22,9 +24,10 @@ export default function Admin({ children }: { children: React.ReactNode }) {
         },
     });
 
+    //Funtion to set and render the permisson and tabs according to it
     useEffect(() => {
         if (isFetched && getProfile?.data) {
-            const permissions: any[] = [];
+            let permissions: any[] = [];
             if (getProfile.data.data.role && getProfile.data.data.role.permissions) {
                 getProfile?.data?.data?.role?.permissions.map((p: any) => {
                     const obj = {
@@ -43,8 +46,15 @@ export default function Admin({ children }: { children: React.ReactNode }) {
 
                     permissions.push(adminNav);
                 }
-                //const links = permissions.map((p) => p.link);
-                //  Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" });
+                const links = permissions.map((p) => p.link);
+                Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" })
+
+
+
+                console.log(links);
+                if (links.includes('/admin/bid')) {
+                    permissions = permissions.filter((p) => p.link !== '/admin/bid');
+                }
                 setChips(permissions);
             }
             setUser(getProfile.data.data);
@@ -53,7 +63,8 @@ export default function Admin({ children }: { children: React.ReactNode }) {
 
 
     const router = useRouter();
-    // Set user data when fetched
+
+    //Function to Set user data when fetched
     useEffect(() => {
         if (isFetched && getProfile?.data) {
             console.log(getProfile.data.data, "Profile");
@@ -69,7 +80,7 @@ export default function Admin({ children }: { children: React.ReactNode }) {
         );
     }
 
-
+    //function to handle logout
     const handleLogout = () => {
         Cookies.remove(currentUser);
         Cookies.remove("nextToken");
@@ -83,6 +94,8 @@ export default function Admin({ children }: { children: React.ReactNode }) {
     return (
         <>
             <div className="flex flex-row justify-between p-4 w-full items-center">
+
+                {/**Remdering the tabs according to the chips  */}
                 <div className="flex flex-col p-4 gap-2">
                     <h1 className="text-2xl font-bold">Admin Dashboard</h1>
                     <div className="flex flex-wrap  gap-4 flex-row">
@@ -95,6 +108,7 @@ export default function Admin({ children }: { children: React.ReactNode }) {
                         })}
                     </div>
                 </div>
+
                 <div className="flex flex-row gap-4 p-4">
                     <User
                         avatarProps={{

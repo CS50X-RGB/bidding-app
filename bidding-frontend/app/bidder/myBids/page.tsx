@@ -9,6 +9,7 @@ import { useState } from "react";
 
 export default function MyBids() {
 
+  //fetches the bidder analytics
   const { data: getAllAnalytics, isLoading } = useQuery({
     queryKey: ["get-analytics"],
     queryFn: async () => {
@@ -16,7 +17,9 @@ export default function MyBids() {
     },
   });
 
+  
   const queryClient = useQueryClient();
+  //uses a querykey to get the user profile
   const result = queryClient.getQueryData(["getProfile"]);
 
   const userData=result?.data?.data??null
@@ -24,7 +27,7 @@ export default function MyBids() {
   console.log("user: ", userData);
 
 
-  // ✅ Extract orders safely
+  // Extract orders safely
   const orders = getAllAnalytics?.data.data.totalOrdersInfo?.orders ?? [];
 
   // ✅ Extract unique bids from orders

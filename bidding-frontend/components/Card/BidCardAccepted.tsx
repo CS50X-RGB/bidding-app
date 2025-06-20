@@ -4,7 +4,11 @@ import { Card, CardBody, Image, Chip, User, Link } from "@heroui/react";
 
 
 export default function AcceptedCard({ bid }: any) {
+    // Define allowed color types for status indicators.
     type colors = "primary" | "warning" | "success" | "danger" | "default" | "secondary"
+
+
+    // Return a color based on the bid status.
     const getStatusColor = (status: any): colors => {
         switch (status) {
             case "inprogress":

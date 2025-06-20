@@ -13,6 +13,7 @@ import Link from "next/link";
 export default function ViewOnBid() {
     const { id } = useParams();
 
+    //fetches the bid details by bid id
     const { data: getBidDetails, isFetched, isFetching } = useQuery({
         queryKey: ["getBidDetails", id],
         queryFn: async () => {

@@ -10,6 +10,8 @@ class OrderService {
         this.orderRepo = new OrderRepository();
         this.bidRepo = new BidsRepository();
     }
+
+    // Creates a new order for a given bid and links it to the user and bid.
     public async createOrder(req: Request, res: Response) {
         try {
             const { bidAmount } = req.body;

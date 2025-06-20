@@ -6,6 +6,8 @@ import { accountRoutes } from "@/core/api/apiRoutes";
 import Link from "next/link";
 
 export default function Bidder() {
+
+  // Fetch all users with the role 'BIDDER'.
   const { data: allBidders, isFetching: loadingBidders } = useQuery({
     queryKey: ["get-all-bidders"],
     queryFn: async () => {
@@ -14,6 +16,8 @@ export default function Bidder() {
   });
 
   const bidders = allBidders?.data?.data?.users ?? [];
+  
+  // Find the maximum order count among all bidders.
   const maxOrderCount = Math.max(...bidders.map((b: any) => b.orderCount ?? 0));
 
   if (loadingBidders) return <div>Loading...</div>;

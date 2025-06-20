@@ -7,6 +7,8 @@ class CategoryService {
     constructor() {
         this.categoryRepository = new CategoryRepository();
     }
+
+    // Creates a new category if it doesn't already exist, then sends a formatted response.
     public async createCategory(req: Request, res: Response) : Promise<any | null> {
         try {
             const category: CategoryInterface = req.body;
@@ -22,6 +24,8 @@ class CategoryService {
             return res.sendError(null, "Error while creating category", 400);
         }
     }
+
+    // Retrieves a category's ID by its name and sends a formatted response.
     public async getCategoryId(req: Request, res: Response) {
         try {
             const { name } = req.params;
@@ -32,6 +36,8 @@ class CategoryService {
             return res.sendError(null, "Error while getting the role", 400);
         }
     }
+
+    // Deletes a category by its name and sends a formatted response.
     public async deleteCategory(req: Request, res: Response) {
         try {
             const { name }: CategoryInterface = req.body;
@@ -41,6 +47,8 @@ class CategoryService {
             throw new Error(`Error while deleting role`);
         }
     }
+
+    // Creates multiple categories if they do not already exist.    
     public async createCategories(names: CategoryInterface[]): Promise<void> {
         try {
             for (const category of names) {
@@ -56,6 +64,8 @@ class CategoryService {
             console.error('Error while creating roles:', error.message);
         }
     }
+
+    // Fetches all categories or filters them by a search prefix if provided.
     public async getCategory(req: Request, res: Response) {
         try {
             const search = req.query.search as string | undefined;

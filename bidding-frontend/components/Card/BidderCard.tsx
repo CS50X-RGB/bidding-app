@@ -16,6 +16,7 @@ export default function BidderCard({ bid,showPlaceBid = true  }: any) {
     const [bidAmount, setBidAmount] = useState<string>(minBidAmount.toString());
 
 
+    // Create a new order for a bid, navigate to the bid details page, and refresh related queries.
     const createOrder = useMutation({
         mutationKey: ["create-order"],
         mutationFn: async (data: any) => {
@@ -30,6 +31,8 @@ export default function BidderCard({ bid,showPlaceBid = true  }: any) {
             console.log(error);
         }
     });
+
+    // Validate bid amount and create a new order if valid.
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         //  e.preventDefault();
         const amount = Number(bidAmount);

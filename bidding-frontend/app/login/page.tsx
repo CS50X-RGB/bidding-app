@@ -24,6 +24,8 @@ export default function App() {
     role: ""
   });
   const router = useRouter();
+
+  // Handle user signup, store token, and redirect based on the new user’s role.
   const signupMutate = useMutation({
     mutationKey: ["signinMutate"],
     mutationFn: async (siginState: any) => {
@@ -60,6 +62,8 @@ export default function App() {
       });
     },
   });
+
+  // Handle user login, store token and permissions, and redirect based on role.
   const loginMutate = useMutation({
     mutationKey: ["loginMutate"],
     mutationFn: async (loginState: any) => {
@@ -124,13 +128,18 @@ export default function App() {
       });
     },
   });
+
   const [isLoadingLogin, setisLoadingLogin] = useState<boolean>(false);
+  
+  // Update the login form state with the given field type and value.
   const handleChange = (type: string, value: string) => {
     setLoginState((prev) => ({
       ...prev,
       [type]: value,
     }));
   };
+
+  //fucntion to handle the tab chnage for signup and login
   const handleSignupChange = (type: string, value: any) => {
     console.log(type, "value", value);
     setSiginState((prev) => ({
@@ -138,11 +147,15 @@ export default function App() {
       [type]: value,
     }));
   };
+
+  //function to hanlde user signin
   const handleSigin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setisLoadingLogin(true);
     signupMutate.mutate(signinState);
   }
+
+  //fucntion to handle user login
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setisLoadingLogin(true);
@@ -150,6 +163,8 @@ export default function App() {
     loginMutate.mutate(loginState);
   }
   const [selected, setSelected] = useState<any>("login");
+
+  //rendering the roles list 
   let list = useAsyncList({
     async load({ filterText }) {
       let res = await fetch(`${localBackend}/role/all/roles/?search=${filterText}`, {});

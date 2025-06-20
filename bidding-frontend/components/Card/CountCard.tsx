@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardBody } from '@heroui/react';
 import Link from 'next/link';
 
-
+// Type definition for props of a count card component.
 export type CountCardProps = {
   count: number;
   title: string;

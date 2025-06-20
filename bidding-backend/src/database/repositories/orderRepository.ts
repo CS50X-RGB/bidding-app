@@ -5,6 +5,7 @@ import { OrderInterface } from "../../interfaces/orderInterface";
 class OrderRepository {
     constructor() {}
 
+    //This api is used to create the order
     public async create(order: OrderInterface): Promise<any | null> {
         try {
             const newOrderDoc : any = await OrderModel.create(order);

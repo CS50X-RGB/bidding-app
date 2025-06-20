@@ -2,6 +2,8 @@ import { Request,Response,NextFunction } from "express";
 
 class OrderMiddleWare{
     constructor(){}
+
+    //Middleware function for checking bid id
     public async checkBidId(req : Request,res : Response,next : NextFunction){
         try {
             const bidId = req.params.bidId;

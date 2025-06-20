@@ -10,6 +10,8 @@ class BidsService {
     constructor() {
         this.bidRepository = new BidsRepository();
     }
+
+    //service function for creating bid
     public async createBid(req: Request, res: Response): Promise<any | null> {
         try {
             const bid: BidInterfaceCreation = req.body;
@@ -87,6 +89,8 @@ class BidsService {
             return res.sendError(error, "Error file while creating Bid", 400);
         }
     }
+
+    //service function get all bids of a user by a user
     public async getBidByMe(req: Request, res: Response): Promise<any | null> {
         try {
             if (!req.user) {
@@ -99,6 +103,8 @@ class BidsService {
             return res.sendError(error, "Error file while creating Bid", 400);
         }
     }
+
+    //service function to get all the bids of a user
     public async getAllBids(req: Request, res: Response): Promise<any | null> {
         try {
             const bidDoc = await this.bidRepository.getAllBids();
@@ -107,6 +113,8 @@ class BidsService {
             return res.sendError(error, "Error file while creating Bid", 400);
         }
     }
+
+    //service function to get bids by category
     public async getBidByCategory(req: Request, res: Response): Promise<any | null> {
         try {
             const catId = req.params.catId;
@@ -116,6 +124,8 @@ class BidsService {
             return res.sendError(error, "Error file while creating Bid", 400);
         }
     }
+
+     //service function to get bids counte by category
     public async getBidsCountByCategory(req: Request, res: Response): Promise<any | null> {
         try {
             const countByCategory = await this.bidRepository.getBidsCountByCat();
@@ -124,6 +134,8 @@ class BidsService {
             return res.sendError(error, "Error caused during fetching data", 500);
         }
     }
+
+     //service function to update the orders on a bid
     public async updateOrder(req: Request, res: Response): Promise<any | null> {
         try {
             const bidId: any = req.params.bidId;
@@ -134,6 +146,8 @@ class BidsService {
             return res.sendError(null, "Error While Accepting the Order", 400);
         }
     }
+
+     //service function to get the accepted orders
     public async getAcceptedOrders(req: Request, res: Response): Promise<any | null> {
         try {
             const acceptedBids = await this.bidRepository.getAllAcceptedOrders();
@@ -142,6 +156,8 @@ class BidsService {
             return res.sendError(error, "Error while accepted Bids", 500);
         }
     }
+
+    //this service is to get the accepted order for the seller
     public async getAcceptedOrdersByMe(req: Request, res: Response): Promise<any | null> {
         try {
             if (!req.user) {
@@ -154,6 +170,8 @@ class BidsService {
             return res.sendError(error, "Error while accepted Bids", 500);
         }
     }
+
+    //this service is to get the rejected order 
     public async getRejectedOrders(req: Request, res: Response): Promise<any | null> {
         try {
             const rejectedBids = await this.bidRepository.getAllRejecteddOrders();
@@ -162,6 +180,8 @@ class BidsService {
             return res.sendError(error, "Error while accepted Bids", 500);
         }
     }
+
+    //this service is to get the orders by bid id
     public async getOrdersByBidId(req: Request, res: Response): Promise<any | null> {
         try {
             const bidId: any = req.params.bidId;
@@ -172,6 +192,8 @@ class BidsService {
             return res.sendError(error, "Fetching Bid Details failed", 400);
         }
     }
+
+    //This is the service function for to get the inprogress bids of the seller 
     public async getMyInprogressBids(req: Request, res: Response): Promise<any | null> {
         try {
             if (!req.user) {
@@ -185,6 +207,7 @@ class BidsService {
         }
     }
 
+    //this service is to approve the bid
     public async approveBid(req: Request, res: Response): Promise<any | null> {
         try {
             const bidId: any = req.params.bidId;
@@ -194,6 +217,8 @@ class BidsService {
             return res.sendError(error, "Error while approving bid", 400);
         }
     }
+
+    //this service is to reject the bid
     public async rejectBid(req: Request, res: Response): Promise<any | null> {
         try {
             const bidId: any = req.params.bidId;
@@ -204,6 +229,7 @@ class BidsService {
         }
     }
 
+    //this service is to get the all the approved bids 
     public async getApprovedBid(req: Request, res: Response): Promise<any | null> {
         try {
             const approvedBid = await this.bidRepository.getApprovedBids();
@@ -213,6 +239,7 @@ class BidsService {
         }
     }
 
+    //this service is to get all the bids of seller
     public async getBidsBySellerId(req: Request, res: Response): Promise<any | null> {
         try {
             const sellerId: any = req.params.id
@@ -227,6 +254,7 @@ class BidsService {
         }
     }
 
+    //this service is to get the bids by user id 
     public async getBidsByUserId(req: Request, res: Response): Promise<any | null> {
         try {
             const userId = req.params.id;
@@ -241,6 +269,7 @@ class BidsService {
         }
     }
 
+    //this service is to get the all the bids in which bidder place the bids
     public async getBidsByBidderOrders(req: Request, res: Response): Promise<any | null> {
         try {
             const userId = req.params.id;
@@ -253,6 +282,7 @@ class BidsService {
         }
     }
 
+    //this service is to get the bid by bid id 
     public async getBidByBidId(req: Request, res: Response): Promise<any | null> {
         try {
             const bidId = req.params.id;
@@ -268,12 +298,13 @@ class BidsService {
 
     }
 
+    //this service is to update the bidder live bids view by elemenating the  expired bids
     public async updateExpiredBids(): Promise<void> {
         await this.bidRepository.updateExpiredBids();
     }
 
 
-    //delete bid
+    ////this service is to delete the bid
     public async delteBidById(req: Request, res: Response): Promise<any | null> {
         try {
             const bidId = req.params.bidId;

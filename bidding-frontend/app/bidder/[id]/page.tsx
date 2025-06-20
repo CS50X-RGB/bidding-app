@@ -12,6 +12,7 @@ import OrderTable from "@/components/Table/OrdersTable";
 export default function ViewOnBid() {
     const { id } = useParams();
 
+    //Feteches all the bid details
     const { data: getBidDetails, isFetched, isFetching } = useQuery({
         queryKey: ["getBidDetails", id],
         queryFn: async () => {
@@ -29,9 +30,13 @@ export default function ViewOnBid() {
             </div>
         );
     }
+
+    
     if (isFetched) {
         console.log(getBidDetails?.data.data.orders, "Get Bid Details");
     }
+
+    //prop to pass in order table
     const columnHeaders = [
         "User Name",
         "Email",

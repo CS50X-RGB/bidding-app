@@ -8,11 +8,19 @@ import { useDeleteBid } from "../Bids/useDeleteBid";
 
 
 export default function AdminBidCard({ bid }: any) {
+    // Manage modal open/close state.
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+    // Custom hook to approve a bid with loading state.
     const { mutate: approveBid, isPending: isApproving } = useApproveBid()
+
+    // Custom hook to reject a bid with loading state.
     const { mutate: rejectBid, isPending: isRejeting } = useRejectBid();
+
+    // Custom hook to delete a bid with loading state.
     const { mutate: deleteBid, isPending: isDeleting } = useDeleteBid();
 
+    // Handle deleting a bid and close the modal on success.
     const handleDeleteBid = () => {
         deleteBid(bid._id, {
             onSuccess: () => {

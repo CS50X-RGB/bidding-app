@@ -14,6 +14,7 @@ export default function GetBidderBids() {
     const params = useParams();
     const id = params?.id;
 
+    // Fetch all bids placed by the specified bidder ID.
     const { data: bidsData, isFetching } = useQuery({
         queryKey: ["all-bids", id],
         queryFn: async () => {
@@ -23,6 +24,8 @@ export default function GetBidderBids() {
         enabled: typeof id === "string",
     });
 
+
+    // Fetch user details for the specified bidder or seller ID.
     const { data: userData, isFetching: isLoading } = useQuery({
         queryKey: ["get-user", id],
         queryFn: async () => {

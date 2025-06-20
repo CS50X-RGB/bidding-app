@@ -6,6 +6,8 @@ import { bidsRoutes } from "@/core/api/apiRoutes"
 import { useQuery } from "@tanstack/react-query"
 
 export default function ViewAllBidsAdmin() {
+
+    //Fetches all bids 
     const { data: allBids, isFetching } = useQuery({
         queryKey: ["get-all-bids"],
         queryFn: async () => {
@@ -15,6 +17,7 @@ export default function ViewAllBidsAdmin() {
 
     console.log(allBids);
     
+    //displaing the skeleton for loading state 
     if (isFetching) {
         return (
             <div className="flex flex-col gap-4 items-center w-full">

@@ -1,3 +1,5 @@
+
+//registing all the route related to user account
 export const accountRoutes = {
   login: "/user/login",
   signin: "/user/signin",
@@ -12,18 +14,22 @@ export const accountRoutes = {
 
 
 }
+
+//registing all the route related to user role
 export const rolesRoutes = {
   getAll: "/role/all/roles",
   getPermission: "/role/all/permissions",
   update: "/role/update/permissions"
 }
 
+//registing all the route related to categories
 export const categoryRoutes = {
   getAll: "category/all/categories"
 }
 
+//registing all the route related to bids
 export const bidsRoutes = {
-  createBid: "/bids/create/",
+  createBid: "/bids/createBid/",
   myBids: "/bids/my/bids",
   getAll: "/bids/all",
   getBitDetails: "/bids/get/",
@@ -45,6 +51,7 @@ export const bidsRoutes = {
 
 }
 
+//registing all the route related to analytics dashboard
 export const analyticsRoutes = {
   getAnalyticsValue: "/analytics/total",
   getSellerAnalytics: "/analytics/seller",

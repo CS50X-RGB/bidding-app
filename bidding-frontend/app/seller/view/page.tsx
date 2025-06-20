@@ -6,6 +6,8 @@ import { bidsRoutes } from "@/core/api/apiRoutes"
 import { useQuery } from "@tanstack/react-query"
 
 export default function ViewMyBids() {
+
+    //fetching the users bids 
     const { data: myBids, isFetching } = useQuery({
         queryKey: ["get-my-bids"],
         queryFn: async () => {

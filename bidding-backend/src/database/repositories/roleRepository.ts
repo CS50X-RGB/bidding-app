@@ -3,6 +3,8 @@ import Role from "../models/roleModel"
 import { RoleInterface, RoleInterfaceGet } from "../../interfaces/roleInterface";
 
 class RoleRepository {
+
+  //This api is use to create a role
   public async createRole(role: RoleInterface): Promise<RoleInterface | null> {
     try {
       const newRole = await Role.create(role);
@@ -11,6 +13,8 @@ class RoleRepository {
       throw new Error(`New Error while creating role ${e}`);
     }
   }
+  
+  //This api is use to find a role by name
   public async findRoleByName(name: string): Promise<boolean> {
     try {
       const role = await Role.findOne({ name }).lean();
@@ -19,6 +23,8 @@ class RoleRepository {
       return false;
     }
   }
+
+  //This api is use to delete a role
   public async deleteRole(name: string): Promise<RoleInterface | null> {
     try {
       const role = await Role.findOneAndDelete({ name }).lean();
@@ -27,6 +33,8 @@ class RoleRepository {
       throw new Error(`New Error while deleting role ${e}`);
     }
   }
+
+  //This api is use to get a role by id
   public async getIdByRole(name: string): Promise<any | null> {
     try {
       const role = await Role.findOne({ name }).lean();
@@ -35,6 +43,8 @@ class RoleRepository {
       throw new Error(`Error while getting role ${name}`);
     }
   }
+
+  //This api is use to get all  role
   public async getAll(): Promise<any[]> {
     try {
       const roles = await Role.find();
@@ -44,6 +54,7 @@ class RoleRepository {
     }
   }
 
+  //This api finds roles whose names start with the given prefix (case-insensitive).
   public async findByPreifx(prefix: string) {
     try {
       const regex = new RegExp(`^${prefix}`, 'i');
@@ -53,6 +64,7 @@ class RoleRepository {
     }
   }
 
+  //This is used to toggle the persmission of roles 
   public async togglePermission(roleId: any, permissionId: any[]) {
     try {
       const role = await Role.findById(roleId);

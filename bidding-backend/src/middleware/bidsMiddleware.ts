@@ -4,6 +4,8 @@ import { BidInterfaceCreation } from "../interfaces/bidInterface";
 
 class BidsMiddleware {
     constructor() { }
+
+    //Middleware function for creting bid
     public async createBid(req: Request, res: Response, next: NextFunction) {
         try {
             console.log(req.body, "BODY OF REQUEST");
@@ -16,6 +18,8 @@ class BidsMiddleware {
             return res.sendError(error, "Error in Middleware Bid", 500);
         }
     }
+
+    //Middleware function to  id 
     public async checkId(req: Request, res: Response, next: NextFunction) {
         try {
             const id = req.params.id;
@@ -27,6 +31,8 @@ class BidsMiddleware {
             return res.sendError(error, "Error in Middleware Bid", 500);
         }
     }
+
+    //Middleware function for checking catehory Id
     public async checkcatId(req: Request, res: Response, next: NextFunction) {
         try {
             const catId = req.params.catId;
@@ -38,6 +44,8 @@ class BidsMiddleware {
             return res.sendError(error, "Error in Middleware Bid", 500);
         }
     }
+
+    //Middleware function for checking bid id
     public async checkbidId(req: Request, res: Response, next: NextFunction) {
         try {
             const bidId = req.params.bidId;
@@ -49,6 +57,8 @@ class BidsMiddleware {
             return res.sendError(error, "Error in Middleware Bid", 500);
         }
     }
+
+    //Middleware function for accepting order
     public async acceptOrder(req: Request, res: Response, next: NextFunction) {
         try {
             const bidId = req.params.bidId;

@@ -2,6 +2,8 @@
 import { Card, CardHeader, CardBody, Image, CardFooter } from '@heroui/react'
 import React from 'react'
 
+
+// Type definition for props containing bid, order amount, and creator info.
 type Props = {
     bid: any; // You can replace `any` with a proper type later
     orderAmount: any;

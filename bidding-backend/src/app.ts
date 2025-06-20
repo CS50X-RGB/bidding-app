@@ -74,6 +74,10 @@ const permissions: PermissionCreate[] = [
       name: "View Completed Bids",
       link: "/seller/accept"
    },
+   {
+      name: "View Individual bids",
+      link: "/admin/bid"
+   },
 ];
 
 export const roles: RoleInterface[] = [

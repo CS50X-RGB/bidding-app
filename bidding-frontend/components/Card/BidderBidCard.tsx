@@ -5,12 +5,15 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { use } from 'react';
 
+
+//Type defination for a prop
 type Props = {
     bid: any;
     orders: any[]; // ✅ better type
     user:any;
 };
 
+//function to format date and time
 function formatDateTime(dateString: string): string {
     const d = new Date(dateString);
     const pad = (n: number) => (n < 10 ? '0' + n : n);

@@ -6,6 +6,8 @@ import BidCardSkeleton from "@/components/Card/BidLoadingCard";
 import BidCard from "@/components/Card/BidCardAccepted";
 
 export default function AcceptedPage() {
+
+    //fetching the accepted bid data
     const { data: getAccept, isFetching } = useQuery({
         queryKey: ["getAccept"],
         queryFn: async () => {

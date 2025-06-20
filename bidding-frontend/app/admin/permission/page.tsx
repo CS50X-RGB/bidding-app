@@ -12,16 +12,20 @@ import { queryClient } from "@/app/providers";
 
 
 export default function PermissionPage() {
+
+    //Function to fetches the roles 
     const { data: getRoles, isFetching: isFetchingRoles, isSuccess: isRolesSuccess } = useQuery({
         queryKey: ["getRoles"],
         queryFn: () => getData(rolesRoutes.getAll, {})
     });
 
+    //Function to fetch permission
     const { data: getPermission, isFetching: isFetchingPermission, isSuccess: isPermissionsSuccess } = useQuery({
         queryKey: ["getPermission"],
         queryFn: () => getData(rolesRoutes.getPermission, {})
     });
 
+    //Function to update the permission
     const updatePermissions = useMutation({
         mutationKey: ["updatePersmission"],
         mutationFn: () => putData(rolesRoutes.update, {}, {
@@ -32,6 +36,7 @@ export default function PermissionPage() {
             queryClient.invalidateQueries();
         }
     });
+
     const roles = getRoles?.data?.data || [];
     const permissions = getPermission?.data?.data || [];
 
@@ -40,6 +45,8 @@ export default function PermissionPage() {
     const [backendRoleMap, setBackendRoleMap] = useState<Record<string, string[]>>({});
     const [initialized, setInitialized] = useState(false);
     const [isMount, setisMount] = useState(false);
+
+
     useEffect(() => {
         if (!initialized && isRolesSuccess && isPermissionsSuccess && roles.length > 0) {
             const initialMap: Record<string, string[]> = {};
@@ -50,7 +57,10 @@ export default function PermissionPage() {
             setInitialized(true);
         }
     }, [isRolesSuccess, isPermissionsSuccess, roles, initialized]);
+
     console.log(backendRoleMap, "backendmap");
+
+    //Fucntion to toggle permission
     const handleCheckboxToggle = (roleId: string, permissionId: string) => {
         // Update backendRoleMap
         console.log(permissionId, "Perimission");

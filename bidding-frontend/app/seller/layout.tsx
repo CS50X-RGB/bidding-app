@@ -13,6 +13,7 @@ export default function Supplier({ children }: { children: React.ReactNode }) {
 
     const [chips, setChips]: any[] = useState<any[]>([]);
 
+    //fetches the user profile 
     const { data: getProfile, isFetched, isFetching } = useQuery({
         queryKey: ["getProfile"],
         queryFn: async () => {
@@ -21,6 +22,7 @@ export default function Supplier({ children }: { children: React.ReactNode }) {
         },
     });
 
+    // After fetching the user profile, extract permissions, store allowed links in cookies, and update user state.
     useEffect(() => {
         if (isFetched && getProfile?.data) {
             const permissions: any[] = [];
@@ -42,15 +44,17 @@ export default function Supplier({ children }: { children: React.ReactNode }) {
 
                     permissions.push(adminNav);
                 }
-                //const links = permissions.map((p) => p.link);
-                //  Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" });
+                const links = permissions.map((p) => p.link);
+                Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" });
                 setChips(permissions);
             }
             setUser(getProfile.data.data);
         }
     }, [isFetched, getProfile]);
+
     const router = useRouter();
-    // Set user data when fetched
+
+    // fucntion to Set user data when fetched
     useEffect(() => {
         if (isFetched && getProfile?.data) {
             console.log(getProfile.data.data, "Profile");
@@ -74,6 +78,8 @@ export default function Supplier({ children }: { children: React.ReactNode }) {
     //         link: "/admin/create"
     //     }
     // ];
+
+    //fucntion to handle the logout 
     const handleLogout = () => {
         Cookies.remove(currentUser);
         Cookies.remove("nextToken");

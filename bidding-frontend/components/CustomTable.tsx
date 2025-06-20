@@ -23,6 +23,7 @@ import { CheckIcon } from "@/public/Icons/CheckIcon";
 import CrossIcon from "@/public/Icons/CrossIcon";
 import CustomModal from "./Modal/CustomModal";
 
+// Interface for props of a custom table component with pagination and data
 interface CustomTableProps {
     page: number,
     pages: number,
@@ -39,6 +40,7 @@ export default function CustomTable({
     data,
 }: CustomTableProps) {
 
+    // Mutation to delete a user by ID.
     const deleteById = useMutation({
         mutationKey: ["deletebyId"],
         mutationFn: async (id: any) => {
@@ -54,6 +56,8 @@ export default function CustomTable({
             toast.error("Error caused while deleting user");
         }
     });
+
+    // Mutation to block/unblock a user by ID.
     const updateBlockById = useMutation({
         mutationKey: ["updateBlockyId"],
         mutationFn: async (id: any) => {
@@ -73,23 +77,34 @@ export default function CustomTable({
             });
         }
     });
+
+    // Define colors for user roles.
     const roleColors: Record<string, "primary" | "warning" | "success" | "danger" | "default" | "secondary"> = {
         ADMIN: "primary",
         BIDDER: "warning",
         SELLER: "secondary",
     };
+
+
+    // Disclosure hook for modal state to confirm block/unblock.
     const {
         isOpen: isOpenStatus,
         onOpen: onOpenStatus,
         onOpenChange: onOpenChangeStatus,
         onClose: onCloseStatus
     } = useDisclosure();
+
+    // State to hold the currently selected item.
     const [item, setItem] = useState<any>({});
+
+    // Handler to open modal and set selected item.
     const clickChip = (item: any) => {
         onOpenStatus();
         setItem(item);
         console.log(item,"Item");
     }
+
+    // Function to return the value to render in a cell based on column key.
     const getValue = (item: any, columnKey: any): React.ReactNode => {
         switch (columnKey) {
             case "role":

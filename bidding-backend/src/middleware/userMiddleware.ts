@@ -3,6 +3,8 @@ import { verifyToken } from "../helpers/encrypt";
 
 class UserMiddleware {
     constructor() { }
+
+    //Middleware function for creting user
     public async createUser(req: Request, res: Response, next: NextFunction) {
         try {
             const { name, email, password, role } = req.body;
@@ -14,6 +16,8 @@ class UserMiddleware {
             throw new Error(`Error while creating user ${e}`);
         }
     }
+
+    //Middleware function for verifying admin
     public async verifyAdmin(req: Request, res: Response, next: NextFunction) {
         try {
             const authHeader = req.headers['authorization'];
@@ -35,6 +39,8 @@ class UserMiddleware {
             throw new Error(`Error while Verifying`);
         }
     }
+
+    //Middleware function for verifying user
     public async verify(req: Request, res: Response, next: NextFunction) {
         try {
             const authHeader = req.headers['authorization'];
@@ -43,19 +49,19 @@ class UserMiddleware {
             }
             const token = authHeader.split(' ')[1];
             const decoded: any = await verifyToken(token);
-            if (decoded.role !== "ADMIN") {
+            if (decoded.name) {
                 req.user = {
                     _id: decoded._id,
                     name: decoded.name
                 }
                 next();
-            } else {
-                return res.sendError(null, "Your not Admin", 400);
             }
         } catch (error: any) {
             throw new Error(`Error while Verifying`);
         }
     }
+
+    //Middleware function for verifying login
     public async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { name, password } = req.body;
@@ -67,6 +73,7 @@ class UserMiddleware {
             throw new Error(`Error while logging user ${e}`);
         }
     }
+    //Middleware function for verifying signin
     public async signin(req: Request, res: Response, next: NextFunction) {
         try {
             const { name, password, email, role } = req.body;
@@ -78,6 +85,8 @@ class UserMiddleware {
             throw new Error(`Error while signing user ${e}`);
         }
     }
+
+    //Middleware function for deleting user
     public async deleteId(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
@@ -90,6 +99,7 @@ class UserMiddleware {
         }
     }
 
+    //Middleware function for verifying seller
     public async verifySeller(req: Request, res: Response, next: NextFunction) {
         try {
             const authHeader = req.headers['authorization'];
@@ -114,6 +124,7 @@ class UserMiddleware {
         }
     }
 
+    //Middleware function for verifying Bidder
     public async verifyBidder(req: Request, res: Response, next: NextFunction) {
         try {
             const authHeader = req.headers['authorization'];

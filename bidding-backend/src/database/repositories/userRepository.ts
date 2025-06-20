@@ -6,6 +6,8 @@ import { roles } from "../../app";
 import Role, { IRole } from "../models/roleModel"
 
 class UserRepository {
+    
+    //This api is use to create a user
     public async createUser(user: IUserCreation): Promise<IUserCreation | null> {
         try {
             const newUser = await User.create(user);
@@ -14,6 +16,8 @@ class UserRepository {
             throw new Error(error);
         }
     }
+
+    //This api is use to create a user with token
     public async createUserWithToken(user: IUserCreation): Promise<any | null> {
         try {
             const newUser = await User.create(user);
@@ -23,6 +27,8 @@ class UserRepository {
             throw new Error(error);
         }
     }
+
+    //This api is use to get a user by role
     public async getUserByRole(role: mongoose.Schema.Types.ObjectId): Promise<boolean> {
         try {
             const user = await User.findOne({ role });
@@ -31,6 +37,8 @@ class UserRepository {
             throw new Error(error);
         }
     }
+
+    //This api is use to get a user by email
     public async getUserByEmail(email: string): Promise<any | null> {
         try {
             const user = await User.findOne({ email }).lean();
@@ -39,6 +47,8 @@ class UserRepository {
             throw new Error("No user found");
         }
     }
+
+    //This api is use to get a user by name
     public async getUserByName(name: string): Promise<any | null> {
         try {
             const user = await User.findOne({ name }).populate({
@@ -53,6 +63,8 @@ class UserRepository {
             throw new Error("No user found");
         }
     }
+
+    //This api is use to get a user by id 
     public async getUserById(id: mongoose.Schema.Types.ObjectId): Promise<any | null> {
         try {
             const user = await User.findById(id)
@@ -73,6 +85,8 @@ class UserRepository {
             throw new Error("User Not Found");
         }
     }
+
+    //This api is use to get a user with pagination functionality
     public async getAllUsersPaginated(skip: number, limit: number) {
         try {
             const countUser = await User.countDocuments();
@@ -82,6 +96,8 @@ class UserRepository {
             throw new Error("User Not Found")
         }
     }
+
+    //This api is use to get a all user
     public async getAllUser() {
         try {
             const users = await User.find().populate('role').lean();
@@ -91,6 +107,7 @@ class UserRepository {
         }
     }
 
+    //This api is use to delete a user
     public async deleteUser(id: ObjectId) {
         try {
             return await User.findByIdAndDelete(id);
@@ -98,6 +115,8 @@ class UserRepository {
             throw new Error(`Delete User Failed`);
         }
     }
+
+    //This api is use to update a user (blocked or active)
     public async updateUserIsBlocked(id: ObjectId): Promise<any | null> {
         try {
             const user = await User.findById(id);
@@ -113,6 +132,7 @@ class UserRepository {
         }
     }
 
+    //This api is use to get a user count by roleId
     public async getUserCountByRole(role: ObjectId): Promise<any | null> {
         try {
             const totalUserCount = await User.countDocuments({ role: role, isBlocked: false });
@@ -124,6 +144,7 @@ class UserRepository {
         }
     }
 
+    //This api is use to get a user count by role name
     public async getAllUsersByRoleName(roleName: string) {
         try {
             // Find role document by name
@@ -176,6 +197,7 @@ class UserRepository {
         }
     }
 
+    //This api is use to get a all user by id
     public async getUser(userId: string) {
         try {
             const objectId = new Types.ObjectId(userId);

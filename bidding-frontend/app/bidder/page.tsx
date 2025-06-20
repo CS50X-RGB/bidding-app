@@ -11,6 +11,8 @@ import { useQuery } from "@tanstack/react-query"
 import { all } from "axios";
 
 export default function ViewAllBids() {
+
+    //fetched the bidder analytics
     const { data: getAllAnalytics, isLoading } = useQuery({
         queryKey: ["get-analytics"],
         queryFn: async () => {
@@ -23,6 +25,7 @@ export default function ViewAllBids() {
     return (
         <div className="flex flex-col sm:flex-row justify-center p-4 space-x-8">
 
+            {/* card display */}
             <div className=" w-full flex flex-col sm:flex-row  flex-wrap justify-center gap-4 ">
                 <CountCard
                     title="Total Participated Bids"
@@ -67,6 +70,7 @@ export default function ViewAllBids() {
 
             </div>
 
+             {/* chart to display */}
             <Card className=" w-full h-max flex flex-col sm:flex-row gap-4  justify-center ">
                 {isLoading ? (
                     <p>Loading chart...</p>

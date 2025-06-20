@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 
 
 export default function allBidsSeller() {
+
+    //fetches the bid data
     const { data: myBids, isFetching } = useQuery({
         queryKey: ["get-my-bids"],
         queryFn: async () => {

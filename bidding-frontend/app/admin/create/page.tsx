@@ -17,6 +17,8 @@ export default function CreateFom() {
         role : ''
     });
     const [loadingUser,setloadingUser] = useState<boolean>(false);
+
+    //fucntion to creare user by hitting the api
     const createUser = useMutation({
         mutationKey : ["create-user"],
         mutationFn : async (userData : any) => {
@@ -40,12 +42,16 @@ export default function CreateFom() {
         }
     })
     const router = useRouter();
+
+   // Update a specific user field with the given value. 
     const handleChange = (type: keyof typeof user, value: string) => {
         setUser(prev => ({
             ...prev,
             [type]: value,
         }));
     };
+
+    // Load a list of roles asynchronously with optional search filtering.
     let list = useAsyncList({
         async load({ filterText }) {
             let res = await fetch(`${localBackend}/role/all/roles/?search=${filterText}`, {});
@@ -57,6 +63,8 @@ export default function CreateFom() {
             };
         },
     });
+
+    //fucntion to handle submit
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setloadingUser(true);

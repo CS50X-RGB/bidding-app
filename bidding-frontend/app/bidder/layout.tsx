@@ -13,6 +13,7 @@ export default function Agent({ children }: { children: React.ReactNode }) {
 
     const [chips, setChips]: any[] = useState<any[]>([]);
 
+    //fetches user profile
     const { data: getProfile, isFetched, isFetching } = useQuery({
         queryKey: ["getProfile"],
         queryFn: async () => {
@@ -21,6 +22,7 @@ export default function Agent({ children }: { children: React.ReactNode }) {
         },
     });
 
+    // Set user data, permissions, and allowed links in cookies after the profile is fetched.
     useEffect(() => {
         if (isFetched && getProfile?.data) {
             const permissions: any[] = [];
@@ -42,19 +44,17 @@ export default function Agent({ children }: { children: React.ReactNode }) {
 
                     permissions.push(adminNav);
                 }
-                //const links = permissions.map((p) => p.link);
-                //  Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" });
+                const links = permissions.map((p) => p.link);
+                Cookies.set("allowedLinks", JSON.stringify(links), { path: "/" });
                 setChips(permissions);
             }
             setUser(getProfile.data.data);
         }
     }, [isFetched, getProfile]);
 
-
-
-
     const router = useRouter();
-    // Set user data when fetched
+
+    //function  to Set user data when fetched
     useEffect(() => {
         if (isFetched && getProfile?.data) {
             console.log(getProfile.data.data, "Profile");
@@ -62,6 +62,7 @@ export default function Agent({ children }: { children: React.ReactNode }) {
         }
     }, [isFetched, getProfile]);
 
+    //displaying spiiner  while fetching data
     if (isFetching) {
         return (
             <div className="flex w-screen h-screen justify-center items-center">
@@ -70,6 +71,7 @@ export default function Agent({ children }: { children: React.ReactNode }) {
         );
     }
 
+    //fucntion for logging out the user
     const handleLogout = () => {
         Cookies.remove(currentUser);
         Cookies.remove("nextToken");

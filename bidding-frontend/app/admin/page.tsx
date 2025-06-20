@@ -11,12 +11,16 @@ import Link from "next/link";
 
 export default function Page() {
   const [page, setPage] = useState<number>(1);
+
+  // Fetch all users for the given page with pagination.
   const { data: getAllUsers, isFetching } = useQuery({
     queryKey: ["get-all-users", page],
     queryFn: async () => {
       return await getData(`${accountRoutes.allUsers}/?page=${page}&offset=10`, {});
     }
   });
+
+  // Fetch analytics data.
   const { data: getAllAnalytics, isFetching: isFetchingAnalytics } = useQuery({
     queryKey: ["get-analytics", page],
     queryFn: async () => {
@@ -26,12 +30,15 @@ export default function Page() {
 
 
   });
+
   console.log(getAllAnalytics);
 
   return (
 
     <>
       <div className="flex flex-col sm:flex-row justify-center p-4 space-x-8">
+
+        {/**Dispaly the analytics card */}
 
         <div className="w-full flex flex-col sm:flex-row  flex-wrap justify-center gap-4 ">
           <CountCard
@@ -91,6 +98,8 @@ export default function Page() {
         </div>
 
 
+        {/*  Display a pie chart of bid statuses or a loading message while fetching analytics data. */}
+
         <Card className=" w-full h-max flex flex-col sm:flex-row gap-4  justify-center ">
           {isFetchingAnalytics ? (
             <p>Loading chart...</p>
@@ -100,6 +109,7 @@ export default function Page() {
         </Card>
       </div>
 
+      {/*Display the  table */}
       <div className=" w-full  p-4 flex justify-center mx-auto">
         <CustomTable
           data={getAllUsers?.data.data.users}
